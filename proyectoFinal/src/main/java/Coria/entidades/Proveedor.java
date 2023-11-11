@@ -4,6 +4,8 @@
  */
 package Coria.Entidades;
 
+import Coria.entidades.Usuario;
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,43 +13,41 @@ import org.hibernate.annotations.GenericGenerator;
 
 
 
-
-
 @Entity
-public class Proveedor {
+public class Proveedor extends Usuario implements Serializable{
 
-   @Id  // Usar javax.persistence.Id para la clave primaria
+   @Id  
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
-    private String nombre;
+    private String idProveedor;
+    private String nombreEmpresa;
     private String tipoServicio;
     private String calificacion;
 
     public Proveedor() {
     }
 
-    public Proveedor(String id, String nombre, String tipoServicio, String calificacion) {
-        this.id = id;
-        this.nombre = nombre;
+    public Proveedor(String idProveedor, String nombreEmpresa, String tipoServicio, String calificacion) {
+        this.idProveedor = idProveedor;
+        this.nombreEmpresa = nombreEmpresa;
         this.tipoServicio = tipoServicio;
         this.calificacion = calificacion;
     }
 
-    public String getId() {
-        return id;
+    public String getIdProveedor() {
+        return idProveedor;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setIdProveedor(String idProveedor) {
+        this.idProveedor = idProveedor;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombreEmpresa() {
+        return nombreEmpresa;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombreEmpresa(String nombreEmpresa) {
+        this.nombreEmpresa = nombreEmpresa;
     }
 
     public String getTipoServicio() {
@@ -66,9 +66,5 @@ public class Proveedor {
         this.calificacion = calificacion;
     }
 
-    @Override
-    public String toString() {
-        return "Proveedor{" + "id=" + id + ", nombre=" + nombre + ", tipoServicio=" + tipoServicio + ", calificacion=" + calificacion + '}';
-    }
 
 }
