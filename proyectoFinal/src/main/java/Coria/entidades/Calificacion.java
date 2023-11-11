@@ -1,10 +1,12 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package Coria.entidades;
 
 import java.util.Date;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
@@ -13,29 +15,47 @@ import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
- * @author Usuario
+ * @author romi_
  */
-public class calificacion extends Usuario {
-    
+@Entity
+public class Calificacion {
+
     @Id
     @GeneratedValue(generator = "uuid")//el id se hace solo
     @GenericGenerator(name = "uuid", strategy = "uuid2")//ningun id se repite
-    private Usuario proveedor;
-    
+    private String idCalificacion;
+    private String idProveedor;
+    private String idUsuario;
     private Integer calificacion;
     @Temporal(TemporalType.DATE)
     private Date fechaBaja;
     private String comentario;
 
-    public calificacion() {
+    public Calificacion() {
     }
 
-    public Usuario getProveedor() {
-        return proveedor;
+    public String getIdCalificacion() {
+        return idCalificacion;
     }
 
-    public void setProveedor(Usuario proveedor) {
-        this.proveedor = proveedor;
+    public void setIdCalificacion(String idCalificacion) {
+        this.idCalificacion = idCalificacion;
+    }
+
+    public String getIdProveedor() {
+        return idProveedor;
+    }
+
+    public void setIdProveedor(String idProveedor) {
+        this.idProveedor = idProveedor;
+    }
+
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public Integer getCalificacion() {
@@ -62,6 +82,5 @@ public class calificacion extends Usuario {
         this.comentario = comentario;
     }
 
-    
-    
 }
+

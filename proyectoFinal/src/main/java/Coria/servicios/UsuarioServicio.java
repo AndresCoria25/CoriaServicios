@@ -34,9 +34,9 @@ public class UsuarioServicio implements UserDetailsService {
     private ImagenServicio imagenServicio;
 
     @Transactional
-    public void registrar(MultipartFile archivo, String nombre, String email, String password, String password2) throws MiExcepcion {
+    public void registrar(MultipartFile archivo, String nombre, String email,String telefono, String password) throws MiExcepcion {
 
-        validar(nombre, email, password, password2);
+        validar(nombre, email, telefono, password);
 
         if (usuarioRepositorio.buscarPorEmail(email) != null) {
             throw new MiExcepcion("el email ya esta en uso");
@@ -54,9 +54,9 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
     @Transactional
-    public void actualizar(MultipartFile archivo, String id, String nombre, String email, String password, String password2) throws MiExcepcion {
+    public void actualizar(MultipartFile archivo, String id, String nombre, String email,String telefono, String password) throws MiExcepcion {
 
-        validar(nombre, email, password, password2);
+        validar(nombre, email, telefono, password);
 
         Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
         if (respuesta.isPresent()) {
@@ -69,6 +69,7 @@ public class UsuarioServicio implements UserDetailsService {
             }
             usuario.setNombre(nombre);
             usuario.setEmail(email);
+            usuario.setTelefono(telefono);
             usuario.setPassword(new BCryptPasswordEncoder().encode(password));
             usuario.setRol(usuario.getRol());
             String idImagen = null;
@@ -128,7 +129,7 @@ public class UsuarioServicio implements UserDetailsService {
         }
     }
 
-    private void validar(String nombre, String email, String password, String password2) throws MiExcepcion {
+    private void validar(String nombre, String email, String telefono, String password) throws MiExcepcion {
 
         if (nombre.isEmpty() || nombre == null) {
             throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
@@ -136,13 +137,15 @@ public class UsuarioServicio implements UserDetailsService {
         if (email.isEmpty() || email == null) {
             throw new MiExcepcion("el email no puede ser nulo o estar vacio");
         }
+         
+        if (telefono.isEmpty()) {
+            throw new MiExcepcion("el telefono no puede estar vacio");
+        }
         if (password.isEmpty() || password == null || password.length() <= 5) {
             throw new MiExcepcion("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
         }
 
-        if (!password.equals(password2)) {
-            throw new MiExcepcion("Las contraseñas ingresadas deben ser iguales");
-        }
+       
 
     }
 

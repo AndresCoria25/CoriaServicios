@@ -25,7 +25,7 @@ public class Usuario {
     private String apellido;
     private String password;
     private String email;
-    private int telefono;
+    private String telefono;
     @Temporal(TemporalType.DATE)
     private Date fechaBaja;
     private String motivoBaja;
@@ -87,11 +87,11 @@ public class Usuario {
         this.email = email;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
     

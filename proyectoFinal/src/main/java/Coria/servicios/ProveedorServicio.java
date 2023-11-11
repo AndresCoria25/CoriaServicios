@@ -22,11 +22,11 @@ public class ProveedorServicio {
     ProveedorRepositorio provRep;
     
     @Transactional
-    public void crearProveedor(String nombre) throws MiExcepcion {
-        validar(nombre);
+    public void crearProveedor(String nombreEmpresa) throws MiExcepcion {
+        validar(nombreEmpresa);
         Proveedor proveedor = new Proveedor();
 
-        proveedor.setNombre(nombre);
+        proveedor.setNombreEmpresa(nombreEmpresa);
 
         provRep.save(proveedor);
     }
@@ -38,13 +38,13 @@ public class ProveedorServicio {
         return proveedor;
     }
 
-    public void modificarProveedor(String id, String nombre) throws MiExcepcion {
-        validar(nombre);
+    public void modificarProveedor(String id, String nombreEmpresa) throws MiExcepcion {
+        validar(nombreEmpresa);
         Optional<Proveedor> respuesta = provRep.findById(id);
 
         if (respuesta.isPresent()) {
             Proveedor proveedor = respuesta.get();
-            proveedor.setNombre(nombre);
+            proveedor.setNombreEmpresa(nombreEmpresa);
 
             provRep.save(proveedor);
         }
@@ -54,9 +54,9 @@ public class ProveedorServicio {
         return provRep.getOne(id);
     }
 
-    private void validar(String nombre) throws MiExcepcion{
+    private void validar(String nombreEmpresa) throws MiExcepcion{
         
-        if(nombre.isEmpty() || nombre == null){
+        if(nombreEmpresa.isEmpty() || nombreEmpresa == null){
             throw new MiExcepcion("El nombre del proveedor no puede estar vacio");
         }
     }
