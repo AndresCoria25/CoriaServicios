@@ -32,27 +32,22 @@ public class TrabajoServicio {
         traRep.save(trab);
     }
 
-    @Transactional
-    public void modificarTrabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
-        validar(idTrabajo, estado, tipo, duracion, presupuesto);
+   @Transactional
+public void modificarTrabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
+    validar(idTrabajo, estado, tipo, duracion, presupuesto);
 
-        Optional<Trabajo> respuesta = traRep.findById(idTrabajo);
-        if (respuesta.isPresent()) {
-            Trabajo tra = respuesta.get();
-
-            if (!tra.getIdTrabajo().equals(idTrabajo)) {
-                if (traRep.buscarPorTrabajo(idTrabajo) != null) {
-                    throw new MiExcepcion("no existe");
-                }
-            }
-            tra.setDuracion(duracion);
-            tra.setEstado(estado);
-            tra.setPresupuesto(presupuesto);
-            tra.setTipo(tipo);
-            traRep.save(tra);
-        }
-
+    Optional<Trabajo> respuesta = traRep.findById(idTrabajo);
+    if (respuesta.isPresent()) {
+        Trabajo tra = respuesta.get();
+        tra.setDuracion(duracion);
+        tra.setEstado(estado);
+        tra.setPresupuesto(presupuesto);
+        tra.setTipo(tipo);
+        traRep.save(tra);
+    } else {
+        throw new MiExcepcion("El trabajo no existe");
     }
+}
 
     private void validar(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
 

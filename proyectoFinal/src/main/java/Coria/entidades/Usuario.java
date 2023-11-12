@@ -30,21 +30,22 @@ public class Usuario {
     private Date fechaBaja;
     private String motivoBaja;
 
+   
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
     @OneToOne
     private Imagen imagen;
-
+    
+   public Usuario() {
+    
+}
     public Imagen getImagen() {
         return imagen;
     }
 
     public void setImagen(Imagen imagen) {
         this.imagen = imagen;
-    }
-
-    public Usuario() {
     }
 
     public String getId() {
@@ -94,8 +95,8 @@ public class Usuario {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-    
-        public Rol getRol() {
+
+    public Rol getRol() {
         return rol;
     }
 
@@ -119,5 +120,4 @@ public class Usuario {
         this.motivoBaja = motivoBaja;
     }
 
- 
 }
