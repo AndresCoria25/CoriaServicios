@@ -1,64 +1,71 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
-package Coria.Servicios;
+package Coria.servicios;
 
-import Coria.Entidades.Proveedor;
-import Coria.Repositorio.ProveedorRepositorio;
+import Coria.entidades.Proveedor;
 import Coria.excepciones.MiExcepcion;
-import java.util.ArrayList;
-import java.util.List;
+import Coria.repositorios.ProveedorRepositorio;
 import java.util.Optional;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 public class ProveedorServicio {
-    
+
     @Autowired
-    ProveedorRepositorio provRep;
+    private ProveedorRepositorio provRep;
+
+    @Transactional
+    public void registrar(String nombreEmpresa, String tipoServicio, String calificacion) throws MiExcepcion {
+
+        validar(nombreEmpresa, tipoServicio, calificacion);
+
+        if (provRep.findById(nombreEmpresa) != null) {
+            throw new MiExcepcion("el proveedor ya esta registrado");
+
+        }
+
+        Proveedor prov = new Proveedor();
+        prov.setNombreEmpresa(nombreEmpresa);
+        prov.setTipoServicio(tipoServicio);
+        prov.setCalificacion(calificacion);
+        provRep.save(prov);
+    }
     
     @Transactional
-    public void crearProveedor(String nombre) throws MiExcepcion {
-        validar(nombre);
-        Proveedor proveedor = new Proveedor();
+    public void actualizar(String nombreEmpresa, String tipoServicio, String calificacion) throws MiExcepcion {
 
-        proveedor.setNombre(nombre);
+        validar(nombreEmpresa, tipoServicio, calificacion);
 
-        provRep.save(proveedor);
-    }
+        Optional<Proveedor> optionalProveedor = provRep.findById(nombreEmpresa);
+        if (optionalProveedor.isPresent()) {
+            Proveedor prov = optionalProveedor.get();
 
-    public List<Proveedor> listarProveedor() {
-        List<Proveedor> proveedor = new ArrayList();
-        proveedor = provRep.findAll();
-
-        return proveedor;
-    }
-
-    public void modificarProveedor(String id, String nombre) throws MiExcepcion {
-        validar(nombre);
-        Optional<Proveedor> respuesta = provRep.findById(id);
-
-        if (respuesta.isPresent()) {
-            Proveedor proveedor = respuesta.get();
-            proveedor.setNombre(nombre);
-
-            provRep.save(proveedor);
+            prov.setNombreEmpresa(nombreEmpresa);
+            prov.setTipoServicio(tipoServicio);
+            prov.setCalificacion(calificacion);
+            provRep.save(prov);
         }
     }
     
-    public Proveedor getOne(String id){
-        return provRep.getOne(id);
-    }
 
-    private void validar(String nombre) throws MiExcepcion{
-        
-        if(nombre.isEmpty() || nombre == null){
-            throw new MiExcepcion("El nombre del proveedor no puede estar vacio");
+    private void validar(String nombreEmpresa, String tipoServicio, String calificacion) throws MiExcepcion {
+
+        if (nombreEmpresa.isEmpty() || nombreEmpresa == null) {
+            throw new MiExcepcion("el nombre de empresa no puede ser nulo o estar vacío");
+        }
+        if (tipoServicio.isEmpty() || tipoServicio == null) {
+            throw new MiExcepcion("el tipo de servicio no puede ser nulo o estar vacio");
+        }
+
+        if (calificacion.isEmpty() || calificacion == null) {
+            throw new MiExcepcion("la calificacion no puede estar vacio");
         }
     }
-}
 
+}

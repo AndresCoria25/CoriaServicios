@@ -4,9 +4,10 @@
  */
 package Coria.Controladores;
 
-import Coria.Entidades.Proveedor;
 
-import Coria.Servicios.ProveedorServicio;
+import Coria.entidades.Proveedor;
+import Coria.excepciones.MiExcepcion;
+import Coria.servicios.ProveedorServicio;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,12 +33,12 @@ public class ProveedorControlador {
     }
 
     @PostMapping("/registro")
-    public String registro(@RequestParam String nombre, ModelMap modelo) {
+    public String registro(@RequestParam String nombreEmpresa,@RequestParam String tipoServicio,@RequestParam String calificacion, ModelMap modelo) {
 
         try {
-            provServ.crearProveedor(nombre);
+            provServ.registrar(nombreEmpresa, tipoServicio, calificacion);
             modelo.put("exito", "El Proveedor fue registrado correctamente");
-        } catch (Exception ex) {
+        } catch (MiExcepcion ex) {
             modelo.put("error", ex.getMessage());
             return "proveedor_form.html";
         }
@@ -45,35 +46,7 @@ public class ProveedorControlador {
         return "index.html";
     }
 
-    @GetMapping("/proveedor")
-    public String listar(ModelMap modelo) {
-
-        List<Proveedor> proveedor = provServ.listarProveedor();
-
-        modelo.addAttribute("proveedores", proveedor);
-
-        return "proveedor_list.html";
-    }
-
-    @GetMapping("/modificar/{id}")
-    public String modificar(@PathVariable String id, ModelMap modelo) {
-        modelo.put("proveedor", provServ.getOne(id));
-        return "proveedor_modificar.html";
-    }
-
-    @PostMapping("/modificar/{id}")
-    public String modificar(@PathVariable String id, String nombre, ModelMap modelo) {
-        try {
-            provServ.modificarProveedor(id, nombre);
-            modelo.put("exito", "El Proveedor fue modificado correctamente");
-            return "redirect:/proveedor/lista";
-        } catch (Exception ex) {
-            modelo.put("error", ex.getMessage());
-            return "proveedor_modificar.html";
-        }
-
-    }
+   
 
 }
-
 
