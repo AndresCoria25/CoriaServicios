@@ -5,16 +5,20 @@
  */
 package Coria.controladores;
 
+///// Franco
 import Coria.servicios.TrabajoServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+=======
+///// Desarrolladores
 /**
  *
  * @author romi_
  */
+///// Franco
 @Controller
 @RequestMapping("/")
 public class TrabajoControlador {
@@ -26,4 +30,8 @@ public class TrabajoControlador {
         
         //ESTE CONTROLADOR SOLO ESTA EN MODO DE VISTA
     }
+=======
+public class TrabajoControlador {
+    
+///// Desarrolladores
 }
