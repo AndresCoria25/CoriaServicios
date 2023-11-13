@@ -30,17 +30,16 @@ public class UsuarioServicio implements UserDetailsService {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
-    @Autowired
-    private ImagenServicio imagenServicio;
-
+//    @Autowired
+//    private ImagenServicio imagenServicio;
     @Transactional
-    public void registrar(MultipartFile archivo, String nombre, String email, String telefono, String password) throws MiExcepcion {
+    public void registrar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
 
-        validar(nombre, email, telefono, password);
+        validar(nombre, apellido, email, telefono, password);
 
-        if (usuarioRepositorio.buscarPorEmail(email) != null) {
-            throw new MiExcepcion("el email ya esta en uso");
-
+        Usuario usuarioExistente = usuarioRepositorio.buscarPorEmail(email);
+        if (usuarioExistente != null) {
+            throw new MiExcepcion("El correo electrónico ya está en uso.");
         }
 
         Usuario usuario = new Usuario();
@@ -48,15 +47,15 @@ public class UsuarioServicio implements UserDetailsService {
         usuario.setEmail(email);
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
         usuario.setRol(Rol.USER);
-        Imagen imagen = imagenServicio.guardar(archivo);
-        usuario.setImagen(imagen);
+//        Imagen imagen = imagenServicio.guardar(archivo);
+//        usuario.setImagen(imagen);
         usuarioRepositorio.save(usuario);
     }
 
     @Transactional
-    public Usuario actualizar(MultipartFile archivo, String id, String nombre, String email, String telefono, String password) throws MiExcepcion {
+    public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
 
-        validar(nombre, email, telefono, password);
+        validar(nombre, apellido, email, telefono, password);
 
         Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
         if (respuesta.isPresent()) {
@@ -68,21 +67,21 @@ public class UsuarioServicio implements UserDetailsService {
                 }
             }
             usuario.setNombre(nombre);
+            usuario.setApellido(apellido);
             usuario.setEmail(email);
             usuario.setTelefono(telefono);
             usuario.setPassword(new BCryptPasswordEncoder().encode(password));
             usuario.setRol(usuario.getRol());
-            String idImagen = null;
+//            String idImagen = null;
 
-            if (usuario.getImagen() != null) {
-                idImagen = usuario.getImagen().getId();
-            }
-
-            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
-            usuario.setImagen(imagen);
+//            if (usuario.getImagen() != null) {
+//                idImagen = usuario.getImagen().getId();
+//            }
+//            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
+//            usuario.setImagen(imagen);
             usuarioRepositorio.save(usuario);
         }
-        return actualizar(archivo, id, nombre, email, telefono, password);
+        return actualizar(id, nombre, apellido, email, telefono, password);
     }
 
     public Usuario getOne(String id) {
@@ -130,11 +129,15 @@ public class UsuarioServicio implements UserDetailsService {
         }
     }
 
-    private void validar(String nombre, String email, String telefono, String password) throws MiExcepcion {
+    private void validar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
 
         if (nombre.isEmpty() || nombre == null) {
             throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
         }
+        if (apellido.isEmpty() || apellido == null) {
+            throw new MiExcepcion("el apellido no puede ser nulo o estar vacío");
+        }
+
         if (email.isEmpty() || email == null) {
             throw new MiExcepcion("el email no puede ser nulo o estar vacio");
         }

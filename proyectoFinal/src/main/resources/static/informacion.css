@@ -1,0 +1,82 @@
+
+.p1index {
+    color: black;
+    margin: -5px;
+    font-size: 20px;
+}
+
+.p2index {
+    color: black;
+    font-size: 20px;
+}
+
+.p3index {
+    color: rgb(252, 252, 252);
+    font-size: 25px;
+    margin: 5px;
+    ;
+}
+
+hr{
+    margin: 300px 
+}
+
+.imghtml {
+    width: 100px;
+    /* Cambia este valor según el tamaño que desees */
+    height: auto;
+    /* Para mantener la proporción original de la imagen */
+    margin: -2%;
+
+}
+
+/* NUEVOS CAMBIOS*/
+
+footer {
+    background-color: #000000; /* Color de fondo negro */
+    opacity: 0.8; /* Opaca el color del FOOTER de 1.00 a 0.01 donde 1.00 es color normal */
+    color: #fff; /* Color de texto blanco */
+    padding: 15px 0; /* Espaciado interior solo en los lados izquierdo y derecho, sin espacio arriba/abajo */
+    margin: 0; /* Elimina los márgenes predeterminados */
+    text-align: center; /* Centra el contenido del pie de página */
+}
+.containerfooter {
+    text-align: center; /* Centrar el contenido del pie de página */
+}
+.content {
+    min-height: 100vh; /* Establece la altura mínima del contenido principal como el 100% del alto de la ventana (viewport height) */
+    display: flex;
+    flex-direction: column;
+}
+/* Estilos para el contenedor de la imagen */
+.image-container {
+    width: 100%;
+    padding: 0; /* Elimina el relleno */
+    margin: 0; /* Elimina el margen */
+}
+
+/* Estilos para la imagen */
+.img-fluid {
+    max-width: 100%;
+    height: auto; /* Mantiene la proporción de aspecto de la imagen */
+    display: block; /* Asegura que la imagen se comporte como un bloque */
+}
+/* Estilos para la barra azul */
+
+.borde-negro {
+    border-bottom: 1px solid rgb(188, 188, 188); /* Borde inferior */
+}
+@font-face {
+    font-family: sundays;
+    src: url('Sunday.ttf') format('truetype');
+}
+
+.Sunday {
+    font-family: sundays;
+}
+body{
+background: #8e9eab;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #eef2f3, #8e9eab);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #eef2f3, #8e9eab); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}

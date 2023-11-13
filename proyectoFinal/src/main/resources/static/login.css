@@ -1,0 +1,13 @@
+body {
+    background-image: url('/imagenes/ima.jpg'); /* Reemplaza 'ruta/de/la/imagen.jpg' con la ruta real de tu imagen */
+    background-size: cover; /* Opciones para el tamaño de la imagen de fondo */
+    background-repeat: no-repeat; /* Para evitar la repetición de la imagen */
+
+}
+
+.bordelogin {
+    min-height: 300px;
+    border: 2px solid #ccc; /* Ancho y color del borde */
+    border-radius: 10px;   /* Radio de borde para hacerlo redondeado */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Sombra para efecto de elevación */
+}
