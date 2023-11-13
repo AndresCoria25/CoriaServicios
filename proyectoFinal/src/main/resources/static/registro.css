@@ -1,0 +1,40 @@
+
+body {
+    background: #FDC830;
+    background: -webkit-linear-gradient(to right, #F37335, #FDC830);
+    background: linear-gradient(to right, #F37335, #FDC830);
+    
+}
+
+.container-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 130px); /* Adjust as needed to avoid overlapping with the navbar and footer */
+}
+
+.formulario {
+    width: 80%;
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.btn {
+    width: 100%;
+}
+
+footer {
+    background-color: #000000;
+    opacity: 0.8;
+    color: #fff;
+    padding: 15px 0;
+    text-align: center;
+}

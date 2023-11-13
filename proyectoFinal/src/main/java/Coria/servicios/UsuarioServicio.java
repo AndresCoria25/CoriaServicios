@@ -30,17 +30,22 @@ public class UsuarioServicio implements UserDetailsService {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
-    @Autowired
-    private ImagenServicio imagenServicio;
-
+//    @Autowired
+//    private ImagenServicio imagenServicio;
     @Transactional
+///// Franco
+    public void registrar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+=======
     public void registrar(MultipartFile archivo, String nombre, String email,String telefono, String password) throws MiExcepcion {
 
         validar(nombre, email, telefono, password);
+///// Desarrolladores
 
-        if (usuarioRepositorio.buscarPorEmail(email) != null) {
-            throw new MiExcepcion("el email ya esta en uso");
+        validar(nombre, apellido, email, telefono, password);
 
+        Usuario usuarioExistente = usuarioRepositorio.buscarPorEmail(email);
+        if (usuarioExistente != null) {
+            throw new MiExcepcion("El correo electrónico ya está en uso.");
         }
 
         Usuario usuario = new Usuario();
@@ -48,10 +53,23 @@ public class UsuarioServicio implements UserDetailsService {
         usuario.setEmail(email);
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
         usuario.setRol(Rol.USER);
-        Imagen imagen = imagenServicio.guardar(archivo);
-        usuario.setImagen(imagen);
+//        Imagen imagen = imagenServicio.guardar(archivo);
+//        usuario.setImagen(imagen);
         usuarioRepositorio.save(usuario);
     }
+///// Franco
+@Transactional
+public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+    validar(nombre, apellido, email, telefono, password);
+
+    Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+    
+    if (respuesta.isPresent()) {
+        Usuario usuario = respuesta.get();
+        
+        if (!usuario.getEmail().equals(email) && usuarioRepositorio.buscarPorEmail(email) != null) {
+            throw new MiExcepcion("El email ya está en uso");
+/////
 
     @Transactional
     public void actualizar(MultipartFile archivo, String id, String nombre, String email,String telefono, String password) throws MiExcepcion {
@@ -81,8 +99,56 @@ public class UsuarioServicio implements UserDetailsService {
             Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
             usuario.setImagen(imagen);
             usuarioRepositorio.save(usuario);
+///// Desarrolladores
         }
+        
+        usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
+        usuario.setEmail(email);
+        usuario.setTelefono(telefono);
+        usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+        usuario.setRol(usuario.getRol());
+        
+        // Actualizar la imagen si es necesario
+        // ...
+        
+        return usuarioRepositorio.save(usuario);
+    } else {
+        throw new MiExcepcion("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
     }
+}
+
+//    @Transactional
+//    public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+//
+//        validar(nombre, apellido, email, telefono, password);
+//
+//        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+//        if (respuesta.isPresent()) {
+//            Usuario usuario = respuesta.get();
+//
+//            if (!usuario.getEmail().equals(email)) {
+//                if (usuarioRepositorio.buscarPorEmail(email) != null) {
+//                    throw new MiExcepcion("el email ya esta en uso");
+//                }
+//            }
+//            usuario.setNombre(nombre);
+//            usuario.setApellido(apellido);
+//            usuario.setEmail(email);
+//            usuario.setTelefono(telefono);
+//            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+//            usuario.setRol(usuario.getRol());
+////            String idImagen = null;
+//
+////            if (usuario.getImagen() != null) {
+////                idImagen = usuario.getImagen().getId();
+////            }
+////            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
+////            usuario.setImagen(imagen);
+//            usuarioRepositorio.save(usuario);
+//        }
+//        return actualizar(id, nombre, apellido, email, telefono, password);
+//    }
 
     public Usuario getOne(String id) {
         return usuarioRepositorio.getOne(id);
@@ -114,14 +180,14 @@ public class UsuarioServicio implements UserDetailsService {
 
     public void darDeBajaAdmin(String Id, String motivo) {
         Usuario admin = usuarioRepositorio.findById(Id)
-              .orElseThrow(() -> new RuntimeException("No se ha encontrado al administrador con ID: " + Id));
+                .orElseThrow(() -> new RuntimeException("No se ha encontrado al administrador con ID: " + Id));
 
         if (admin.getRol().equals(Rol.ADMIN)) {
-           
+
             admin.setFechaBaja(new Date());
-        
+
             admin.setMotivoBaja(motivo);
-           
+
             usuarioRepositorio.save(admin);
         } else {
             // El usuario no es un administrador, lanzar una excepción
@@ -129,15 +195,27 @@ public class UsuarioServicio implements UserDetailsService {
         }
     }
 
+///// Franco
+    private void validar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+=======
     private void validar(String nombre, String email, String telefono, String password) throws MiExcepcion {
+///// Desarrolladores
 
         if (nombre.isEmpty() || nombre == null) {
             throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
         }
+        if (apellido.isEmpty() || apellido == null) {
+            throw new MiExcepcion("el apellido no puede ser nulo o estar vacío");
+        }
+
         if (email.isEmpty() || email == null) {
             throw new MiExcepcion("el email no puede ser nulo o estar vacio");
         }
+///// Franco
+
+=======
          
+///// Desarrolladores
         if (telefono.isEmpty()) {
             throw new MiExcepcion("el telefono no puede estar vacio");
         }
@@ -145,8 +223,11 @@ public class UsuarioServicio implements UserDetailsService {
             throw new MiExcepcion("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
         }
 
+///// Franco
+=======
        
 
+///// Desarrolladores
     }
 
     @Override
