@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-=======
+
 ///// Desarrolladores
 /**
  *
@@ -30,8 +30,5 @@ public class TrabajoControlador {
         
         //ESTE CONTROLADOR SOLO ESTA EN MODO DE VISTA
     }
-=======
-public class TrabajoControlador {
-    
-///// Desarrolladores
+
 }

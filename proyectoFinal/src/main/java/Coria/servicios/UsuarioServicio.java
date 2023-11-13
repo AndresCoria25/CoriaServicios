@@ -33,13 +33,7 @@ public class UsuarioServicio implements UserDetailsService {
 //    @Autowired
 //    private ImagenServicio imagenServicio;
     @Transactional
-///// Franco
     public void registrar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-=======
-    public void registrar(MultipartFile archivo, String nombre, String email,String telefono, String password) throws MiExcepcion {
-
-        validar(nombre, email, telefono, password);
-///// Desarrolladores
 
         validar(nombre, apellido, email, telefono, password);
 
@@ -57,7 +51,6 @@ public class UsuarioServicio implements UserDetailsService {
 //        usuario.setImagen(imagen);
         usuarioRepositorio.save(usuario);
     }
-///// Franco
 @Transactional
 public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
     validar(nombre, apellido, email, telefono, password);
@@ -69,37 +62,6 @@ public Usuario actualizar(String id, String nombre, String apellido, String emai
         
         if (!usuario.getEmail().equals(email) && usuarioRepositorio.buscarPorEmail(email) != null) {
             throw new MiExcepcion("El email ya está en uso");
-/////
-
-    @Transactional
-    public void actualizar(MultipartFile archivo, String id, String nombre, String email,String telefono, String password) throws MiExcepcion {
-
-        validar(nombre, email, telefono, password);
-
-        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
-        if (respuesta.isPresent()) {
-            Usuario usuario = respuesta.get();
-
-            if (!usuario.getEmail().equals(email)) {
-                if (usuarioRepositorio.buscarPorEmail(email) != null) {
-                    throw new MiExcepcion("el email ya esta en uso");
-                }
-            }
-            usuario.setNombre(nombre);
-            usuario.setEmail(email);
-            usuario.setTelefono(telefono);
-            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-            usuario.setRol(usuario.getRol());
-            String idImagen = null;
-
-            if (usuario.getImagen() != null) {
-                idImagen = usuario.getImagen().getId();
-            }
-
-            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
-            usuario.setImagen(imagen);
-            usuarioRepositorio.save(usuario);
-///// Desarrolladores
         }
         
         usuario.setNombre(nombre);
@@ -195,11 +157,7 @@ public Usuario actualizar(String id, String nombre, String apellido, String emai
         }
     }
 
-///// Franco
     private void validar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-=======
-    private void validar(String nombre, String email, String telefono, String password) throws MiExcepcion {
-///// Desarrolladores
 
         if (nombre.isEmpty() || nombre == null) {
             throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
@@ -211,11 +169,7 @@ public Usuario actualizar(String id, String nombre, String apellido, String emai
         if (email.isEmpty() || email == null) {
             throw new MiExcepcion("el email no puede ser nulo o estar vacio");
         }
-///// Franco
 
-=======
-         
-///// Desarrolladores
         if (telefono.isEmpty()) {
             throw new MiExcepcion("el telefono no puede estar vacio");
         }
@@ -223,11 +177,6 @@ public Usuario actualizar(String id, String nombre, String apellido, String emai
             throw new MiExcepcion("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
         }
 
-///// Franco
-=======
-       
-
-///// Desarrolladores
     }
 
     @Override
