@@ -78,16 +78,14 @@
     <body>
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container">
-                <a class="navbar-brand" href="#">CORIA SERVICIOS</a>
+                <a class="navbar-brand" href="http://localhost:8080/">CORIA SERVICIOS</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
 
-                        <li class="nav-item">
-                            <a class="nav-link active" th:href="@{/}">Inicio</a>
-                        </li>
+                       
                         <li class="nav-item">
                             <a class="nav-link active" th:if="${session.usuariosession == null}" th:href="@{/login}">Login</a>
                         </li>
@@ -100,12 +98,9 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="#">Perfil</a>
                         </li>
-                        <li class="nav-item">
-                            <a th:href="@{/logout}" class="nav-link">Cerrar Sesión</a>
-                        </li>
-
+                        
                         <form class="d-flex" role="search">
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Buscar</button>
                         </form>
                     </ul>

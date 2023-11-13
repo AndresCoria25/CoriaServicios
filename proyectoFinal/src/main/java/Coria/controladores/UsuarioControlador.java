@@ -67,22 +67,25 @@ public class UsuarioControlador {
         return "login.html";
     }
 
-    @GetMapping("/perfil/{id}")
-    public String actualizar(@PathVariable String id, @RequestParam String nombre, @RequestParam String apellido,
-            @RequestParam String email, @RequestParam String password,@RequestParam String telefono, ModelMap modelo,
-            HttpSession session) throws Exception {
-        try {
-            Usuario usuario = usuarioServicio.actualizar(id, nombre, apellido, email, telefono, password);
-            session.setAttribute("usuariosession", usuario);
-            return "redirect:/";
-        } catch (MiExcepcion ex) {
-            modelo.put("error", ex.getMessage());
-            ex.printStackTrace();
-            Usuario usuario = usuarioServicio.getOne(id);
-            modelo.put("usuario", usuario);
-            return "modificar.html";
-        }
+@GetMapping("/perfil/{id}")
+public String actualizar(@PathVariable String id, @RequestParam String nombre, @RequestParam String apellido,
+        @RequestParam String email, @RequestParam String password, @RequestParam String telefono, ModelMap modelo,
+        HttpSession session) throws Exception {
+    try {
+        System.out.println("Controlador de perfil ejecutado. ID: " + id);
+        
+        Usuario usuario = usuarioServicio.actualizar(id, nombre, apellido, email, telefono, password);
+        session.setAttribute("usuariosession", usuario);
+        return "redirect:/";
+    } catch (MiExcepcion ex) {
+        System.out.println("Error en el controlador de perfil: " + ex.getMessage());
+        modelo.put("error", ex.getMessage());
+        ex.printStackTrace();
+        Usuario usuario = usuarioServicio.getOne(id);
+        modelo.put("usuario", usuario);
+        return "actualizar.html";
     }
+}
 
 }
 

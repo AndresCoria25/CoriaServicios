@@ -51,38 +51,66 @@ public class UsuarioServicio implements UserDetailsService {
 //        usuario.setImagen(imagen);
         usuarioRepositorio.save(usuario);
     }
+@Transactional
+public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+    validar(nombre, apellido, email, telefono, password);
 
-    @Transactional
-    public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-
-        validar(nombre, apellido, email, telefono, password);
-
-        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
-        if (respuesta.isPresent()) {
-            Usuario usuario = respuesta.get();
-
-            if (!usuario.getEmail().equals(email)) {
-                if (usuarioRepositorio.buscarPorEmail(email) != null) {
-                    throw new MiExcepcion("el email ya esta en uso");
-                }
-            }
-            usuario.setNombre(nombre);
-            usuario.setApellido(apellido);
-            usuario.setEmail(email);
-            usuario.setTelefono(telefono);
-            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-            usuario.setRol(usuario.getRol());
-//            String idImagen = null;
-
-//            if (usuario.getImagen() != null) {
-//                idImagen = usuario.getImagen().getId();
-//            }
-//            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
-//            usuario.setImagen(imagen);
-            usuarioRepositorio.save(usuario);
+    Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+    
+    if (respuesta.isPresent()) {
+        Usuario usuario = respuesta.get();
+        
+        if (!usuario.getEmail().equals(email) && usuarioRepositorio.buscarPorEmail(email) != null) {
+            throw new MiExcepcion("El email ya está en uso");
         }
-        return actualizar(id, nombre, apellido, email, telefono, password);
+        
+        usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
+        usuario.setEmail(email);
+        usuario.setTelefono(telefono);
+        usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+        usuario.setRol(usuario.getRol());
+        
+        // Actualizar la imagen si es necesario
+        // ...
+        
+        return usuarioRepositorio.save(usuario);
+    } else {
+        throw new MiExcepcion("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
     }
+}
+
+//    @Transactional
+//    public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+//
+//        validar(nombre, apellido, email, telefono, password);
+//
+//        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+//        if (respuesta.isPresent()) {
+//            Usuario usuario = respuesta.get();
+//
+//            if (!usuario.getEmail().equals(email)) {
+//                if (usuarioRepositorio.buscarPorEmail(email) != null) {
+//                    throw new MiExcepcion("el email ya esta en uso");
+//                }
+//            }
+//            usuario.setNombre(nombre);
+//            usuario.setApellido(apellido);
+//            usuario.setEmail(email);
+//            usuario.setTelefono(telefono);
+//            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+//            usuario.setRol(usuario.getRol());
+////            String idImagen = null;
+//
+////            if (usuario.getImagen() != null) {
+////                idImagen = usuario.getImagen().getId();
+////            }
+////            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
+////            usuario.setImagen(imagen);
+//            usuarioRepositorio.save(usuario);
+//        }
+//        return actualizar(id, nombre, apellido, email, telefono, password);
+//    }
 
     public Usuario getOne(String id) {
         return usuarioRepositorio.getOne(id);
