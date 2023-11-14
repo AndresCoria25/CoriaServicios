@@ -45,6 +45,7 @@ public class UsuarioServicio implements UserDetailsService {
         Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
         usuario.setEmail(email);
+        usuario.setApellido(apellido);
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
         usuario.setRol(Rol.USER);
 //        Imagen imagen = imagenServicio.guardar(archivo);
