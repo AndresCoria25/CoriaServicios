@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
+///// Franco
 public interface TrabajoRepositorio extends JpaRepository<Trabajo, String> {
 
 //    @Query("SELECT t FROM Trabajo t WHERE t.idProveedor = :nombre")

@@ -11,6 +11,7 @@ import Coria.servicios.UsuarioServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -40,14 +42,33 @@ public class UsuarioControlador {
         return "index.html";
 
     }
-
+    //CORRESPONDE AL ADMIN
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/lista")
     public String listarUsuarios(ModelMap modelo) {
         List<Usuario> listaUsuarios = usuarioServicio.listarUsuarios();
         modelo.addAttribute("listaUsuarios", listaUsuarios);
         return "listaUsuarios.html";
     }
+    @GetMapping("/modificar")
+    public String mostrarFormularioModificarContrasena(ModelMap modelo) {
+        // Puedes agregar lógica adicional si es necesario
+        return "modificar";
+    }
 
+//    @PostMapping("/modificar")
+//    public String modificar(@RequestParam String email, @RequestParam String contrasenaActual, 
+//              @RequestParam String nuevaContrasena, @RequestParam String confirmarContrasena, ModelMap modelo, RedirectAttributes redirectAttributes) {
+//        try {
+//            usuarioServicio.modificar(email, contrasenaActual, nuevaContrasena, confirmarContrasena);
+//            redirectAttributes.addFlashAttribute("mensaje", "Contraseña modificada correctamente");
+//            return "redirect:/usuario/perfil"; // Puedes redirigir a donde quieras después de modificar la contraseña
+//        } catch (MiExcepcion ex) {
+//            modelo.put("error", ex.getMessage());
+//            return "modificar";
+//        }
+//    }
+    
     
     @GetMapping("/registrar")//localhost:8080/registrar
     public String registrar() {
@@ -56,9 +77,9 @@ public class UsuarioControlador {
 
     @PostMapping("/registro")
     public String registro(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String email,
-            @RequestParam String password, String password2, @RequestParam String telefono, RedirectAttributes redirectAttributes) throws MiExcepcion {
+            @RequestParam String password, String password2, @RequestParam String telefono, MultipartFile archivo, RedirectAttributes redirectAttributes) throws MiExcepcion {
         try {
-            usuarioServicio.registrar(nombre, apellido, email, telefono, password);
+            usuarioServicio.registrar(archivo, nombre, apellido, email, telefono, password);
             redirectAttributes.addFlashAttribute("mensaje", "Registro Exitoso. Ahora puedes Iniciar Sesión.");
             return "redirect:/";
         } catch (MiExcepcion ex) {
@@ -76,13 +97,21 @@ public class UsuarioControlador {
     }
 
     @GetMapping("/perfil/{id}")
+    public String mostrarFormulario(@PathVariable String id, ModelMap modelo) {
+        // Lógica para obtener el usuario por ID y agregarlo al modelo
+        Usuario usuario = usuarioServicio.getOne(id);
+        modelo.addAttribute("usuario", usuario);
+        return "perfil_usuario.html";
+    }
+
+    @PostMapping("/perfil/{id}")
     public String actualizar(@PathVariable String id, @RequestParam String nombre, @RequestParam String apellido,
-            @RequestParam String email, @RequestParam String password, @RequestParam String telefono, ModelMap modelo,
+            @RequestParam String email, @RequestParam String password, @RequestParam String telefono, MultipartFile archivo, ModelMap modelo,
             HttpSession session) throws Exception {
         try {
             System.out.println("Controlador de perfil ejecutado. ID: " + id);
 
-            Usuario usuario = usuarioServicio.actualizar(id, nombre, apellido, email, telefono, password);
+            Usuario usuario = usuarioServicio.actualizar(archivo, id, nombre, apellido, email, telefono, password);
             session.setAttribute("usuariosession", usuario);
             return "redirect:/";
         } catch (MiExcepcion ex) {
@@ -91,10 +120,9 @@ public class UsuarioControlador {
             ex.printStackTrace();
             Usuario usuario = usuarioServicio.getOne(id);
             modelo.put("usuario", usuario);
-            return "actualizar.html";
+            return "redirect:/perfil/{id}";
         }
     }
-
 }
 
 //@RequestParam("archivo") MultipartFile archivo,

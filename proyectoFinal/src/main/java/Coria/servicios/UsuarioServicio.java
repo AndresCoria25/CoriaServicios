@@ -30,10 +30,10 @@ public class UsuarioServicio implements UserDetailsService {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
-//    @Autowired
-//    private ImagenServicio imagenServicio;
+    @Autowired
+    private ImagenServicio imagenServicio;
     @Transactional
-    public void registrar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+    public void registrar(MultipartFile archivo,String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
 
         validar(nombre, apellido, email, telefono, password);
 
@@ -44,15 +44,18 @@ public class UsuarioServicio implements UserDetailsService {
 
         Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
         usuario.setEmail(email);
+        usuario.setTelefono(telefono);
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
         usuario.setRol(Rol.USER);
-//        Imagen imagen = imagenServicio.guardar(archivo);
-//        usuario.setImagen(imagen);
+        Imagen imagen = imagenServicio.guardar(archivo);
+        usuario.setImagen(imagen);
         usuarioRepositorio.save(usuario);
     }
+    
 @Transactional
-public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+public Usuario actualizar(MultipartFile archivo,String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
     validar(nombre, apellido, email, telefono, password);
 
     Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
@@ -73,6 +76,14 @@ public Usuario actualizar(String id, String nombre, String apellido, String emai
         
         // Actualizar la imagen si es necesario
         // ...
+        String idImagen = null;
+
+            if (usuario.getImagen() != null) {
+                idImagen = usuario.getImagen().getId();
+            }
+            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
+            usuario.setImagen(imagen);
+            usuarioRepositorio.save(usuario);
         
         return usuarioRepositorio.save(usuario);
     } else {

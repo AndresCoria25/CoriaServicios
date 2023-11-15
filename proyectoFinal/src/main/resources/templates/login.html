@@ -10,30 +10,32 @@
         <link rel="icon" href="/imagenes/logo.png" type="icon/png"> <!-- CAMBIA EL ICONO DE LA PESTAÑA DE TU PAGINA  --> 
 
 
-        <style>
+       <style>
+        body {
+            background: #FDC830;
+            background: -webkit-linear-gradient(to right, #F37335, #FDC830);
+            background: linear-gradient(to right, #F37335, #FDC830);
+        }
 
-            body {
-                background: #FDC830;  /* fallback for old browsers */
-                background: -webkit-linear-gradient(to right, #F37335, #FDC830);  /* Chrome 10-25, Safari 5.1-6 */
-                background: linear-gradient(to right, #F37335, #FDC830); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        .formulario-con-borde {
+            width: 80%;
+            margin: 30% auto;
+            border: 2px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            background-color: white;
+        }
 
-            }
-            
-            .formulario-con-borde {
-                border: 2px solid #ccc; /* Ancho y color del borde */
-                padding: 20px; /* Espaciado interior para que el contenido no toque el borde */
-                border-radius: 10px; /* Radio de borde para hacerlo redondeado */
-                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Sombra para efecto de elevación */
-                background-color: white;
-            }
-            footer {
-                background-color: #000000;
-                opacity: 0.8;
-                color: #fff;
-                padding: 15px 0;
-                text-align: center;
-            }
-        </style>
+        footer {
+            background-color: #000000;
+            opacity: 0.8;
+            color: #fff;
+            padding: 15px 0;
+            text-align: center;
+        }
+    </style>
+
     </head>
     <body>
 
@@ -41,27 +43,33 @@
 
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container">
-               <a class="navbar-brand" href="http://localhost:8080/">CORIA SERVICIOS</a>
+                <a class="navbar-brand" href="http://localhost:8080/">CORIA SERVICIOS</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
 
-                        
                         <li class="nav-item">
                             <a class="nav-link active" th:if="${session.usuariosession == null}" th:href="@{/login}">Login</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" th:href="@{/registrar}">Registro</a>
-                        </li> 
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Registro
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" th:href="@{/registrar}">Registro Usuario</a>
+                                <a class="dropdown-item" th:href="@{/registrarP}">Registro Proveedor</a>
+                            </div>
+                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link active" href="#">Contacto</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="#">Perfil</a>
                         </li>
-                       
 
                         <form class="d-flex" role="search">
                             <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
@@ -72,18 +80,19 @@
             </div>
         </nav>
 
-        <div class="container-fluid">
-            <div class="row justify-content-center align-items-center min-vh-100">
-                <div class="col-md-3">
-
-                    <form class="formulario formulario-con-borde" th:action="@{/logincheck}" method="POST">
-                        <fieldset>
+       
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                
+                <form class="formulario formulario-con-borde" th:action="@{/logincheck}" method="POST">
+                   <fieldset>
                             <div class="mb-2"> <!-- Reduce la distancia superior -->
-                                <label for="exampleInputEmail1" class="form-label-left">Email</label>
+                                <label for="exampleInputEmail1" class="form-label-left"><h5>Email</h5></label>
                                 <input type="email" class="form-control" id="exampleInputEmail1" name="email" placeholder="Ingrese su correo electrónico" required>
                             </div>
                             <div class="mb-2"> <!-- Reduce la distancia superior -->
-                                <label for="exampleInputPassword1" class="form-label-left">Contraseña</label>
+                                <label for="exampleInputPassword1" class="form-label-left"><h5>Contraseña</h5></label>
                                 <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Ingrese su contraseña" required>
                             </div>
 
@@ -94,13 +103,17 @@
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-dark mt-2 botones"><strong> INICIAR SESIÓN </strong></button>
                             </div>
+
                             <br>
+                            <!--  <a th:href="@{/registrar}" class="btn btn-outline-success"><strong> DESEAS REGISTRARTE COMO USUARIO INGRESA AQUI </strong></a> -->
+
                             <a href="">¿Olvidaste tu contraseña?</a>
 
 
                         </fieldset>
                     </form>
                 </div>
+
             </div>
         </div>
         <br>
@@ -122,6 +135,11 @@
                 <p>&copy; 2023 CoriaServicios. Todos los derechos reservados.</p>
             </div>
         </footer>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Otras dependencias y estilos -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Otros scripts -->
 
     </body>
 </html>

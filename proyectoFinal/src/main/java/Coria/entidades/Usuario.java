@@ -14,7 +14,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-public class Usuario {
+public class Usuario  {
 
     @Id
     @GeneratedValue(generator = "uuid")//el id se hace solo
