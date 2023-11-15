@@ -43,33 +43,45 @@ public class UsuarioControlador {
 
     }
     //CORRESPONDE AL ADMIN
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+
     @GetMapping("/lista")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public String listarUsuarios(ModelMap modelo) {
         List<Usuario> listaUsuarios = usuarioServicio.listarUsuarios();
         modelo.addAttribute("listaUsuarios", listaUsuarios);
         return "listaUsuarios.html";
     }
+
     @GetMapping("/modificar")
     public String mostrarFormularioModificarContrasena(ModelMap modelo) {
         // Puedes agregar lógica adicional si es necesario
         return "modificar";
     }
 
-//    @PostMapping("/modificar")
-//    public String modificar(@RequestParam String email, @RequestParam String contrasenaActual, 
-//              @RequestParam String nuevaContrasena, @RequestParam String confirmarContrasena, ModelMap modelo, RedirectAttributes redirectAttributes) {
-//        try {
-//            usuarioServicio.modificar(email, contrasenaActual, nuevaContrasena, confirmarContrasena);
-//            redirectAttributes.addFlashAttribute("mensaje", "Contraseña modificada correctamente");
-//            return "redirect:/usuario/perfil"; // Puedes redirigir a donde quieras después de modificar la contraseña
-//        } catch (MiExcepcion ex) {
-//            modelo.put("error", ex.getMessage());
-//            return "modificar";
-//        }
-//    }
-    
-    
+    @PostMapping("/eliminar/{id}")
+    public String eliminarUsuario(@PathVariable String id, ModelMap model) {
+        try {
+            usuarioServicio.eliminarUsuario(id);
+            return "redirect:../lista";
+        } catch (Exception e) {
+            model.put("error", e.getMessage());
+        }
+        return "redirect:../lista";
+    }
+
+    @PostMapping("/modificar/{id}")
+    public String modificar(@PathVariable String id,@RequestParam String nombre, @RequestParam String apellido, RedirectAttributes redirectAttributes) throws MiExcepcion {
+        try {
+            usuarioServicio.modificarUsuario(id, nombre, apellido);
+            redirectAttributes.addFlashAttribute("mensaje", "Contraseña modificada correctamente");
+            return "redirect:../lista"; // Puedes redirigir a donde quieras después de modificar la contraseña
+        } catch (MiExcepcion ex) {
+            System.out.println(ex.getMessage());
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            return "redirect:../lista";
+        }
+    }
+
     @GetMapping("/registrar")//localhost:8080/registrar
     public String registrar() {
         return "registro.html";

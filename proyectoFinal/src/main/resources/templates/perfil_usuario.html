@@ -44,9 +44,17 @@
         <h1>Perfil del Usuario</h1>
 
         <div>
+            <form th:action="@{/modificar/${usuario.id}}" method="POST">
+                <input type='hidden' name="id" th:value='${usuario.id}'>
+                <label>Nombre</label>
+                <input type='text' name='nombre' th:value='${usuario.nombre}'>
+                <input type='text' name='apellido' th:value='${usuario.apellido}'>
+                <button>Modificar</button>
+            </form>
+            
             <p>Nombre: <span th:text="${usuario.nombre}"></span></p>
             <p>Apellido: <span th:text="${usuario.apellido}"></span></p>
-            <p>Email: <span th:text="${usuario.email}"></span></p>
+
             <!-- Agrega más campos según las propiedades de tu clase Usuario -->
         </div>
 

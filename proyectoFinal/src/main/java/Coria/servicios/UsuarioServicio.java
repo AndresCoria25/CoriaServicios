@@ -32,8 +32,9 @@ public class UsuarioServicio implements UserDetailsService {
 
     @Autowired
     private ImagenServicio imagenServicio;
+
     @Transactional
-    public void registrar(MultipartFile archivo,String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+    public void registrar(MultipartFile archivo, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
 
         validar(nombre, apellido, email, telefono, password);
 
@@ -53,30 +54,30 @@ public class UsuarioServicio implements UserDetailsService {
         usuario.setImagen(imagen);
         usuarioRepositorio.save(usuario);
     }
-    
-@Transactional
-public Usuario actualizar(MultipartFile archivo,String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-    validar(nombre, apellido, email, telefono, password);
 
-    Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
-    
-    if (respuesta.isPresent()) {
-        Usuario usuario = respuesta.get();
-        
-        if (!usuario.getEmail().equals(email) && usuarioRepositorio.buscarPorEmail(email) != null) {
-            throw new MiExcepcion("El email ya está en uso");
-        }
-        
-        usuario.setNombre(nombre);
-        usuario.setApellido(apellido);
-        usuario.setEmail(email);
-        usuario.setTelefono(telefono);
-        usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-        usuario.setRol(usuario.getRol());
-        
-        // Actualizar la imagen si es necesario
-        // ...
-        String idImagen = null;
+    @Transactional
+    public Usuario actualizar(MultipartFile archivo, String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+        validar(nombre, apellido, email, telefono, password);
+
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+
+            if (!usuario.getEmail().equals(email) && usuarioRepositorio.buscarPorEmail(email) != null) {
+                throw new MiExcepcion("El email ya está en uso");
+            }
+
+            usuario.setNombre(nombre);
+            usuario.setApellido(apellido);
+            usuario.setEmail(email);
+            usuario.setTelefono(telefono);
+            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+            usuario.setRol(usuario.getRol());
+
+            // Actualizar la imagen si es necesario
+            // ...
+            String idImagen = null;
 
             if (usuario.getImagen() != null) {
                 idImagen = usuario.getImagen().getId();
@@ -84,44 +85,38 @@ public Usuario actualizar(MultipartFile archivo,String id, String nombre, String
             Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
             usuario.setImagen(imagen);
             usuarioRepositorio.save(usuario);
-        
-        return usuarioRepositorio.save(usuario);
-    } else {
-        throw new MiExcepcion("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
-    }
-}
 
-//    @Transactional
-//    public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-//
-//        validar(nombre, apellido, email, telefono, password);
-//
-//        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
-//        if (respuesta.isPresent()) {
-//            Usuario usuario = respuesta.get();
-//
-//            if (!usuario.getEmail().equals(email)) {
-//                if (usuarioRepositorio.buscarPorEmail(email) != null) {
-//                    throw new MiExcepcion("el email ya esta en uso");
-//                }
-//            }
-//            usuario.setNombre(nombre);
-//            usuario.setApellido(apellido);
-//            usuario.setEmail(email);
-//            usuario.setTelefono(telefono);
-//            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-//            usuario.setRol(usuario.getRol());
-////            String idImagen = null;
-//
-////            if (usuario.getImagen() != null) {
-////                idImagen = usuario.getImagen().getId();
-////            }
-////            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
-////            usuario.setImagen(imagen);
-//            usuarioRepositorio.save(usuario);
-//        }
-//        return actualizar(id, nombre, apellido, email, telefono, password);
-//    }
+            return usuarioRepositorio.save(usuario);
+        } else {
+            throw new MiExcepcion("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
+        }
+    }
+
+    @Transactional
+    public Usuario modificarUsuario(String id, String nombre, String apellido) throws MiExcepcion {
+        
+        if (nombre.isEmpty() || nombre == null) {
+            throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
+        }
+        if (apellido.isEmpty() || apellido == null) {
+            throw new MiExcepcion("el apellido no puede ser nulo o estar vacío");
+        }
+
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+
+           
+            usuario.setNombre(nombre);
+            usuario.setApellido(apellido);
+         
+
+            usuarioRepositorio.save(usuario);
+            return usuario; // Devuelve el usuario modificado
+        } else {
+            throw new MiExcepcion("Usuario no encontrado");
+        }
+    }
 
     public Usuario getOne(String id) {
         return usuarioRepositorio.getOne(id);
@@ -165,6 +160,18 @@ public Usuario actualizar(MultipartFile archivo,String id, String nombre, String
         } else {
             // El usuario no es un administrador, lanzar una excepción
             throw new RuntimeException("El usuario no es un administrador");
+        }
+    }
+
+    public void eliminarUsuario(String id) throws MiExcepcion {
+        if (id.isEmpty() || id.equals("")) {
+            throw new MiExcepcion("el id proporcionado es nulo");
+        } else {
+            Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+            if (respuesta.isPresent()) {
+                Usuario usuario = respuesta.get();
+                usuarioRepositorio.delete(usuario);
+            }
         }
     }
 
