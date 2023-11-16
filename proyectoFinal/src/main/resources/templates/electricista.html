@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
-        <title>Informacion</title>
+        <title>Gasistas</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- BOOSTRAP -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- CREO LOS ESTILOS DEL CSS -->
-        <link rel="stylesheet" type="text/css" href="/informacion.css">
         <!-- ICONO DE PESTAÑA -->
-        <link rel="icon" href="/imagenes/logo.png" type="icon/png"> <!-- CAMBIA EL ICONO DE LA PESTAÑA DE TU PAGINA  --> 
-        <!-- CREO LOS ESTILOS DEL CSS 
-                <link rel="stylesheet" type="text/css" href="/informacion.css">-->
+        <link rel="icon" href="/imagenes/logo.png" type="icon/png">
+        <!-- Tus estilos personalizados u hojas de estilo adicionales -->
+        <link rel="stylesheet" type="text/css" href="/css/tu_estilo.css">
+    </head>
+    <body>
         <style>
 
             body {
@@ -70,18 +70,18 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
 
+                    <li class="nav-item">
+                        <a class="nav-link active" th:if="${session.usuariosession == null}" th:href="@{/login}">Login</a>
+                    </li>
+
 
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Contacto</a>
                     </li>
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link active" th:href="@{'/perfil/' + ${session.usuariosession.id}}">Perfil</a>
                     </li>
 
-                    <li class="nav-item" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-                        <a class="nav-link active" th:href="@{/lista}">Lista de Usuarios</a>
-                    </li>
-                    <!-- sec:authorize=hasRole ('ADMIN') -->
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Buscar</button>
@@ -97,34 +97,34 @@
     </nav>
 
 
+
     <div class="container my-5">
-        <h1 class="Sunday" align="center">Bienvenido a Coria Servicios!</h1>
+        <h1 class="Sunday" align="center">Electricistas Registrados</h1>
+        <div class="mt-5"></div>
+        <!-- Itera sobre la lista de electricistas -->
+        <div class="row">
+            <div th:each="electricista : ${electricistas}" class="col-sm-6 col-md-4 col-lg-3 mb-3">
+                <div class="card bg-dark text-white">
+                    <!-- Imagen del electricista -->
+                    <img src="/imagenes/imagen4.jpeg" class="card-img-top" alt="Electricista Image">
+                    <div class="card-body">
+                        <!-- Etiqueta para Empresa -->
+                        <p><strong>Empresa:</strong> <span th:text="${electricista.nombreEmpresa}"></span></p>
+                        <!-- Etiqueta para Nombre -->
+                        <p><strong>Nombre:</strong> <span th:text="${electricista.nombre}"></span></p>
+                        <!-- Etiqueta para Apellido -->
+                        <p><strong>Apellido:</strong> <span th:text="${electricista.apellido}"></span></p>
+                        <!-- Etiqueta para Teléfono -->
+                        <p><strong>Teléfono:</strong> <span th:text="${electricista.telefono}"></span></p>
+                        <!-- Etiqueta para Email -->
+                        <p><strong>Email:</strong> <span th:text="${electricista.email}"></span></p>
+                        <!-- Puedes agregar más detalles si es necesario -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="image-container">
-        <figure>
-            <a href="/servicios/gasista">
-                <img src="/imagenes/ingeniero.png" alt="Gasista">
-            </a>
-            <figcaption><h1>Gasista</h1></figcaption>
-        </figure>
-        <figure>
-            <a href="/servicios/electricista">
-                <img src="/imagenes/ingeniero5.png" alt="Electricista">
-            </a>
-            <figcaption><h1>Electricista</h1></figcaption>
-        </figure>
-        <figure>
-            <a href="/servicios/plomero">
-                <img src="/imagenes/ingeniero7.png" alt="Plomero">
-            </a>
-            <figcaption><h1>Plomero</h1></figcaption>
-        </figure>
-    </div>
-
-
-    <br>
-    <br>
 
 
     <footer class="fixed-bottom">
@@ -132,8 +132,6 @@
             <p>&copy; 2023 CoriaServicios. Todos los derechos reservados.</p>
         </div>
     </footer>
-
-
 
     <!-- Scripts de Bootstrap y jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"

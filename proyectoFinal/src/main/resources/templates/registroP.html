@@ -8,10 +8,9 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- ICONO DE PESTAÑA -->
         <link rel="icon" href="/imagenes/logo.png" type="icon/png"> <!-- CAMBIA EL ICONO DE LA PESTAÑA DE TU PAGINA  --> 
-<!-- CREO LOS ESTILOS DEL CSS -->
-        <link rel="stylesheet" type="text/css" href="/registroP.css">
 
-       <style>
+
+        <style>
             body {
                 background: #FDC830;
                 background: -webkit-linear-gradient(to right, #F37335, #FDC830);
@@ -80,7 +79,7 @@
 
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container">
-                <a class="navbar-brand" href="http://localhost:8080/">CORIA SERVICIOS</a>
+                <a class="navbar-brand" th:href="@{/}">CORIA SERVICIOS</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -104,9 +103,7 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="#">Contacto</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Perfil</a>
-                        </li>
+
 
                         <form class="d-flex" role="search">
                             <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
@@ -117,13 +114,13 @@
             </div>
         </nav>
 
-       <div class="container">
+        <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6 text-center"> <!-- Agregado 'text-center' aquí -->
                     <br><br>
                     <h3>REGISTRATE COMO PROVEEDOR</h3>
 
-                     <form class="formulario formulario-con-borde" th:action="@{/registroP}" method="post">
+                    <form class="formulario formulario-con-borde" th:action="@{/registroP}" method="post">
                         <div class="form-group my-2">
                             <input type="text" class="form-control" name="nombre" placeholder="NOMBRE" th:value="${nombre}" required>
                         </div>
@@ -146,9 +143,12 @@
                         <div class="form-group my-2">
                             <input type="text" class="form-control" name="nombreEmpresa" placeholder="NOMBRE DE EMPRESA " th:value="${nombreEmpresa}" >
                         </div>
-                        <div class="form-group my-2">
-                            <input type="text" class="form-control" name="tipoServicio" placeholder="TIPO DE SERVICIO DE TU EMPRESA" th:value="${tipoServicio}" >
-                        </div>
+                        <label for="tipoServicio">Selecciona el Tipo de Servicio de tu Empresa</label>
+                        <select class="form-control" name="tipoServicio" id="tipoServicio" th:value="${tipoServicio}">
+                            <option value="Gasista">Gasista</option>
+                            <option value="Electricista">Electricista</option>
+                            <option value="Plomero">Plomero</option>
+                        </select>
 
                         <button type="submit" class="btn btn-dark mt-2 botones">Registrarme</button>
                         <br>

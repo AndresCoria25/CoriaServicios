@@ -52,12 +52,6 @@ public class UsuarioControlador {
         return "listaUsuarios.html";
     }
 
-    @GetMapping("/modificar")
-    public String mostrarFormularioModificarContrasena(ModelMap modelo) {
-        // Puedes agregar lógica adicional si es necesario
-        return "modificar";
-    }
-
     @PostMapping("/eliminar/{id}")
     public String eliminarUsuario(@PathVariable String id, ModelMap model) {
         try {
@@ -69,18 +63,26 @@ public class UsuarioControlador {
         return "redirect:../lista";
     }
 
+    @GetMapping("/modificar/{id}")
+    public String mostrarFormularioModificarContrasena(ModelMap modelo) {
+        // Lógica para cargar datos necesarios, si es necesario
+        modelo.addAttribute("mensaje", "¡Bienvenido al formulario de modificación de contraseña!");
+        return "modificar";
+    }
+
     @PostMapping("/modificar/{id}")
-    public String modificar(@PathVariable String id,@RequestParam String nombre, @RequestParam String apellido, RedirectAttributes redirectAttributes) throws MiExcepcion {
+    public String modificar(@PathVariable String id, @RequestParam String nombre, @RequestParam String apellido, RedirectAttributes redirectAttributes) throws MiExcepcion {
         try {
             usuarioServicio.modificarUsuario(id, nombre, apellido);
-            redirectAttributes.addFlashAttribute("mensaje", "Contraseña modificada correctamente");
-            return "redirect:../lista"; // Puedes redirigir a donde quieras después de modificar la contraseña
+            redirectAttributes.addFlashAttribute("mensaje", "Usuario modificado Correctamente");
+            return "redirect:../perfil/{id}";
         } catch (MiExcepcion ex) {
             System.out.println(ex.getMessage());
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
-            return "redirect:../lista";
+            return "redirect:../perfil/{id}";
         }
     }
+
 
     @GetMapping("/registrar")//localhost:8080/registrar
     public String registrar() {

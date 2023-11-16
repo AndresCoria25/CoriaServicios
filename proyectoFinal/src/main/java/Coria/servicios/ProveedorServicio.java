@@ -32,6 +32,13 @@ public class ProveedorServicio implements UserDetailsService {
     @Autowired
     private ProveedorRepositorio provRep;
     
+    @Autowired
+    public ProveedorServicio(ProveedorRepositorio proveedorRepositorio) {
+        this.provRep = provRep;
+    }
+    public List<Proveedor> obtenerProveedoresPorTipo(String tipoServicio) {
+        return provRep.findByTipoServicio(tipoServicio);
+    }
     @Transactional
     public void registrar(String nombre, String apellido, String email, String telefono, String password, String nombreEmpresa, String tipoServicio) throws MiExcepcion {
         

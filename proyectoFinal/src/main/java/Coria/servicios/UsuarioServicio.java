@@ -75,8 +75,6 @@ public class UsuarioServicio implements UserDetailsService {
             usuario.setPassword(new BCryptPasswordEncoder().encode(password));
             usuario.setRol(usuario.getRol());
 
-            // Actualizar la imagen si es necesario
-            // ...
             String idImagen = null;
 
             if (usuario.getImagen() != null) {
@@ -94,7 +92,7 @@ public class UsuarioServicio implements UserDetailsService {
 
     @Transactional
     public Usuario modificarUsuario(String id, String nombre, String apellido) throws MiExcepcion {
-        
+
         if (nombre.isEmpty() || nombre == null) {
             throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
         }
@@ -106,11 +104,9 @@ public class UsuarioServicio implements UserDetailsService {
         if (respuesta.isPresent()) {
             Usuario usuario = respuesta.get();
 
-           
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);
-         
-
+            
             usuarioRepositorio.save(usuario);
             return usuario; // Devuelve el usuario modificado
         } else {
