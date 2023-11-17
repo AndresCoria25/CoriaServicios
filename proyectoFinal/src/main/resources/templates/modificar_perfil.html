@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <title>TODO supply a title</title>
@@ -11,37 +6,37 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
- <div class="container">
-    <h1 class="mt-5">Modificar Perfil</h1>
-    <form action="/perfil/modificar" method="post">
-        <input type="hidden" th:field="${usuario.id}" />
-        
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" th:value="${usuario.nombre}" class="form-control" required />
+        <div class="container">
+            <h1 class="mt-5">Modificar Perfil</h1>
+            <form action="/perfil/modificar" method="post">
+                <input type="hidden" th:field="${usuario.id}" />
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre:</label>
+                            <input type="text" id="nombre" name="nombre" th:value="${usuario.nombre}" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellido" class="form-label">Apellido:</label>
+                            <input type="text" id="apellido" name="apellido" th:value="${usuario.apellido}" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono:</label>
+                            <input type="tel" id="telefono" name="telefono" th:value="${usuario.telefono}" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" id="email" name="email" th:value="${usuario.email}" class="form-control" required />
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="apellido" class="form-label">Apellido:</label>
-                    <input type="text" id="apellido" name="apellido" th:value="${usuario.apellido}" class="form-control" required />
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="telefono" class="form-label">Teléfono:</label>
-                    <input type="tel" id="telefono" name="telefono" th:value="${usuario.telefono}" class="form-control" required />
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email:</label>
-                    <input type="email" id="email" name="email" th:value="${usuario.email}" class="form-control" required />
-                </div>
-            </div>
+            </form>
         </div>
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            </div>
-        </div>
-    </form>
-</div>
     </body>
 </html>

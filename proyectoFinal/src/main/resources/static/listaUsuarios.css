@@ -5,13 +5,6 @@ body {
     background: linear-gradient(to right, #F37335, #FDC830); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 }
-footer {
-    background-color: #000000;
-    opacity: 0.8;
-    color: #fff;
-    padding: 15px 0;
-    text-align: center;
-}
 .image-container {
     display: flex;
     flex-wrap: wrap;
@@ -41,6 +34,35 @@ footer {
 }
 .image-container img:hover {
     border: 1px solid #000; /* Cambia el color del borde al pasar el mouse sobre la imagen */
+}
+footer {
+    background-color: #000000;
+    opacity: 0.8;
+    color: #fff;
+    padding: 15px 0;
+    text-align: center;
+}
+
+/* Error message de registro*/
+.alert-danger {
+    background-color: #f8d7da; /* Red background color */
+    max-width: 400px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the alert horizontally */
+}
+
+/* Success message de registro*/
+.alert-success {
+    background-color: #d4edda; /* Green background color */
+    max-width: 400px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the alert horizontally */
+}
+.Botonmodificar {
+    background-color: blue;
+    color: #fff;
+}
+.Botoneliminar {
+    background-color: red;
+    color: #fff;
 }
 @font-face {
     font-family: sundays;

@@ -44,6 +44,7 @@ footer {
     padding: 15px 0;
     text-align: center;
 }
+
 /* Error message de registro*/
 .alert-danger {
     background-color: #f8d7da; /* Red background color */

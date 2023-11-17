@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -46,7 +47,7 @@ public class ConfiguracionSeguridad extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/proveedor", "/login", "/registrar", "/registrarP", "/registro", "/registroP").permitAll()
                 .antMatchers("/usuario/**").hasRole("USUARIO")
                 .antMatchers("/proveedor/**").hasRole("PROVEEDOR")
-                .anyRequest().fullyAuthenticated()
+                //.anyRequest().fullyAuthenticated()
                 .and().formLogin()
                 .loginPage("/login")
                 .usernameParameter("email")
@@ -61,4 +62,5 @@ public class ConfiguracionSeguridad extends WebSecurityConfigurerAdapter {
                 .and().csrf()
                 .disable();
     }
+
 }

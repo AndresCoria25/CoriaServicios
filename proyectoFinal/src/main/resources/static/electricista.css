@@ -1,4 +1,3 @@
-
 body {
     background: #FDC830;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #F37335, #FDC830);  /* Chrome 10-25, Safari 5.1-6 */
@@ -41,12 +40,4 @@ footer {
 }
 .image-container img:hover {
     border: 1px solid #000; /* Cambia el color del borde al pasar el mouse sobre la imagen */
-}
-@font-face {
-    font-family: sundays;
-    src: url('Sunday.ttf') format('truetype');
-}
-
-.Sunday {
-    font-family: sundays;
 }
