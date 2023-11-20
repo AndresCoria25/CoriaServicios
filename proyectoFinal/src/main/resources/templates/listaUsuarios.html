@@ -18,7 +18,7 @@
 
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container">
-                <a class="navbar-brand" th:href="@{/informacion}">CORIA SERVICIOS</a>
+                <a th:href="@{/informacion}" class="nav-item nav-link"><img src="/imagenes/CORIA.png" alt="300px" width="200 px" height="60 px"/></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -49,7 +49,7 @@
                 </li>
             </ul>
         </nav>
-
+        <br>
 
         <ul>
             <h1 align="center" class="Sunday">Lista de Usuarios</h1>
@@ -98,14 +98,10 @@
                 </tbody>
             </table>
         </ul>
+        <br><br><br><br><br><br><br><br><br><br><br>
 
-
-        <div class="mt-5"><br><br><br><br></div>
-        <footer class="fixed-bottom">
-            <div class="container">
-                <p>&copy; 2023 CoriaServicios. Todos los derechos reservados.</p>
-            </div>
-        </footer>
+        <!-- FRAGMENTS DEL FOOTER -->
+        <div th:replace="/fragments/footer :: div"></div>
 
         <!-- Scripts de Bootstrap y jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"

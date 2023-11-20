@@ -1,4 +1,4 @@
-package Coria.Controladores;
+package Coria.controladores;
 
 
 import Coria.entidades.Usuario;

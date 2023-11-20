@@ -42,8 +42,8 @@ public class UsuarioControlador {
         return "index.html";
 
     }
-    //CORRESPONDE AL ADMIN
 
+    //CORRESPONDE AL ADMIN
     @GetMapping("/lista")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public String listarUsuarios(ModelMap modelo) {
@@ -51,6 +51,7 @@ public class UsuarioControlador {
         modelo.addAttribute("listaUsuarios", listaUsuarios);
         return "listaUsuarios.html";
     }
+    //CORRESPONDE AL ADMIN
 
     @PostMapping("/eliminar/{id}")
     public String eliminarUsuario(@PathVariable String id, ModelMap model) {
@@ -71,9 +72,22 @@ public class UsuarioControlador {
     }
 
     @PostMapping("/modificar/{id}")
-    public String modificar(@PathVariable String id, @RequestParam String nombre, @RequestParam String apellido, RedirectAttributes redirectAttributes) throws MiExcepcion {
+    public String modificar(
+            @PathVariable String id,
+            @RequestParam String nombre,
+            @RequestParam String apellido,
+            @RequestParam String email,
+            @RequestParam String telefono,
+            @RequestParam String password,
+            @RequestParam String password2,
+            RedirectAttributes redirectAttributes
+    ) throws MiExcepcion {
         try {
-            usuarioServicio.modificarUsuario(id, nombre, apellido);
+            if (!password.equals(password2)) {
+                throw new MiExcepcion("Las contraseñas no coinciden");
+            }
+
+            usuarioServicio.modificarUsuario(id, nombre, apellido, email, telefono, password);
             redirectAttributes.addFlashAttribute("mensaje", "Usuario modificado Correctamente");
             return "redirect:../perfil/{id}";
         } catch (MiExcepcion ex) {
@@ -82,7 +96,6 @@ public class UsuarioControlador {
             return "redirect:../perfil/{id}";
         }
     }
-
 
     @GetMapping("/registrar")//localhost:8080/registrar
     public String registrar() {

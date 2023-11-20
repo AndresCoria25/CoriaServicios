@@ -91,24 +91,22 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
     @Transactional
-    public Usuario modificarUsuario(String id, String nombre, String apellido) throws MiExcepcion {
-
-        if (nombre.isEmpty() || nombre == null) {
-            throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
-        }
-        if (apellido.isEmpty() || apellido == null) {
-            throw new MiExcepcion("el apellido no puede ser nulo o estar vacío");
-        }
+    public Usuario modificarUsuario(String id, String nombre, String apellido, String email,String telefono,String password) throws MiExcepcion {
+        validar(nombre, apellido, email, telefono, password);
 
         Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
         if (respuesta.isPresent()) {
             Usuario usuario = respuesta.get();
 
+            // Update user information
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);
+            usuario.setEmail(email);
+            usuario.setTelefono(telefono);
+            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
             
             usuarioRepositorio.save(usuario);
-            return usuario; // Devuelve el usuario modificado
+            return usuario; // Returns the modified user
         } else {
             throw new MiExcepcion("Usuario no encontrado");
         }

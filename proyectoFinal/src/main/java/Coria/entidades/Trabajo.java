@@ -1,25 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Coria.entidades;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import org.hibernate.annotations.GenericGenerator;
 
-
-/**
- *
- * @author Usuario
- */
 @Entity
-public class Trabajo  {
+public class Trabajo {
     
     @Id
-     @GeneratedValue(generator = "uuid")//el id se hace solo
-    @GenericGenerator(name = "uuid", strategy = "uuid2")//ningun id se repite
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String idTrabajo;
     private String estado;
     private String tipo;
@@ -27,6 +19,14 @@ public class Trabajo  {
     private Double presupuesto;
 
     public Trabajo() {
+    }
+
+    public Trabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) {
+        this.idTrabajo = idTrabajo;
+        this.estado = estado;
+        this.tipo = tipo;
+        this.duracion = duracion;
+        this.presupuesto = presupuesto;
     }
 
     public String getIdTrabajo() {
@@ -68,12 +68,6 @@ public class Trabajo  {
     public void setPresupuesto(Double presupuesto) {
         this.presupuesto = presupuesto;
     }
-   
-    
-   
-    
-    
-    
-    
+
     
 }
