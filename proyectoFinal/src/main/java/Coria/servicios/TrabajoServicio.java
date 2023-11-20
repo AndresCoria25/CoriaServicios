@@ -1,88 +1,95 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package Coria.servicios;
 
 import Coria.entidades.Trabajo;
-import Coria.entidades.Usuario;
 import Coria.excepciones.MiExcepcion;
 import Coria.repositorios.TrabajoRepositorio;
-import Coria.repositorios.UsuarioRepositorio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class TrabajoServicio {
-    
+
     @Autowired
-    TrabajoRepositorio trabRepo;
-    
-    @Transactional
-    public void crearTrabajo(String tipo, String estado, Integer duracion, Double presupuesto) throws MiExcepcion {
-        validar(tipo,estado,duracion,presupuesto);
-        Trabajo trabajo = new Trabajo();
-        trabajo.setTipo(tipo);
-        trabajo.setEstado(estado);
-        trabajo.setDuracion(duracion);
-        trabajo.setPresupuesto(presupuesto);
-        trabRepo.save(trabajo);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Trabajo> listarTrabajos() {
-        List<Trabajo> trabajos = new ArrayList();
-        trabajos = trabRepo.findAll();
-        return trabajos;
-    }
+    private TrabajoRepositorio traRep;
 
     @Transactional
-    public void modificarTrabajo(String idTrabajo, String tipo, String estado, Integer duracion, Double presupuesto) throws MiExcepcion {
-        validar(tipo,estado,duracion,presupuesto);
-        Optional<Trabajo> respuesta = trabRepo.findById(idTrabajo);
+    public void crearTrabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
+        validar(idTrabajo, estado, tipo, duracion, presupuesto);
+        Trabajo trab = new Trabajo();
 
-        if (respuesta.isPresent()) {
-            Trabajo trabajo = respuesta.get();
-            
-            trabajo.setTipo(tipo);
-            trabajo.setEstado(estado);
-            trabajo.setDuracion(duracion);
-            trabajo.setPresupuesto(presupuesto);
-            
-            trabRepo.save(trabajo);
-        }
-    }
-        
-    public Trabajo getOne(String idTrabajo){
-        return trabRepo.getOne(idTrabajo);
+        trab.setIdTrabajo(idTrabajo);
+        trab.setEstado(estado);
+        trab.setTipo(tipo);
+        trab.setDuracion(duracion);
+        trab.setPresupuesto(presupuesto);
+        traRep.save(trab);
     }
 
-    @Transactional
-    public void bajaTrabajo(String idTrabajo) {
-        Optional<Trabajo> respuesta = trabRepo.findById(idTrabajo);
-        if (respuesta.isPresent()) {
-            trabRepo.deleteById(idTrabajo);
-        }
+   @Transactional
+public void modificarTrabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
+    validar(idTrabajo, estado, tipo, duracion, presupuesto);
+
+    Optional<Trabajo> respuesta = traRep.findById(idTrabajo);
+    if (respuesta.isPresent()) {
+        Trabajo tra = respuesta.get();
+        tra.setDuracion(duracion);
+        tra.setEstado(estado);
+        tra.setPresupuesto(presupuesto);
+        tra.setTipo(tipo);
+        traRep.save(tra);
+    } else {
+        throw new MiExcepcion("El trabajo no existe");
     }
-    
-    
-    private void validar(String tipo, String estado, Integer duracion, Double presupuesto) throws MiExcepcion{
+}
+
+  public Trabajo getOne(String id) {
+        return traRep.getOne(id);
+    }
+
+ @Transactional(readOnly = true)
+    public List<Trabajo> listarTrabajo(@RequestParam(required = false) String idTrabajo) {
+
+        List<Trabajo> trabajos = traRep.buscarPorTrabajo(idTrabajo);
         
-        if(tipo.isEmpty() || tipo == null){
-            throw new MiExcepcion("El tipo de trabajo no puede estar vacio o nulo");
+        if (idTrabajo != null && !idTrabajo.isEmpty()) {
+        // Realiza la búsqueda basada en el término de búsqueda
+        return traRep.buscarPorTrabajo(idTrabajo);
+    } else {
+        // Si el término de búsqueda está vacío, devuelve todos los trabajos
+        return traRep.findAll();
+    }
+      
+    }
+
+    private void validar(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
+
+        if (idTrabajo.isEmpty() || idTrabajo == null) {
+            throw new MiExcepcion("el id del trabajo no puede ser nulo o estar vacío");
         }
-        if(estado.isEmpty() || estado == null){
-            throw new MiExcepcion("El estado del trabajo no puede estar vacio o nulo");
+        if (estado.isEmpty() || estado == null) {
+            throw new MiExcepcion("el estado no puede ser nulo o estar vacío");
         }
-        if(duracion<=0 || duracion == null){
-            throw new MiExcepcion("La duración del trabajo no puede estar vacio o menor que cero");
+        if (tipo.isEmpty() || tipo == null) {
+            throw new MiExcepcion("el tipo de trabajo no puede ser nulo o estar vacío");
         }
-        if(presupuesto<0 || presupuesto == null){
-            throw new MiExcepcion("El presupuesto del trabajo no puede estar vacio o menor a cero");
+        if (duracion == null) {
+            throw new MiExcepcion("la duración no puede estar vacía");
         }
-        
-    }    
-    
+
+        if (presupuesto == null) {
+            throw new MiExcepcion("el presupuesto no puede estar vacío");
+        }
+
+    }
 
 }

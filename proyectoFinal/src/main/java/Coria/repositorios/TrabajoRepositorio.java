@@ -26,4 +26,6 @@ public interface TrabajoRepositorio extends JpaRepository<Trabajo, String> {
     @Query("SELECT t FROM Trabajo t WHERE t.estado = :estado")
     public Optional<Trabajo> buscarPorEstado(@Param("estado") String estado); 
     
+    
+    
 }
