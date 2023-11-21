@@ -8,10 +8,12 @@ package Coria.servicios;
 import Coria.entidades.Trabajo;
 import Coria.excepciones.MiException;
 import Coria.repositorios.TrabajoRepositorio;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class TrabajoServicio {
@@ -48,6 +50,25 @@ public void modificarTrabajo(String idTrabajo, String estado, String tipo, Integ
         throw new MiException("El trabajo no existe");
     }
 }
+
+public Trabajo getOne(String id) {
+        return traRep.getOne(id);
+    }
+
+ @Transactional(readOnly = true)
+    public List<Trabajo> listarTrabajo(@RequestParam(required = false) String idTrabajo) {
+
+        List<Trabajo> trabajos = traRep.buscarPorTrabajo(idTrabajo);
+        
+        if (idTrabajo != null && !idTrabajo.isEmpty()) {
+        // Realiza la búsqueda basada en el término de búsqueda
+        return traRep.buscarPorTrabajo(idTrabajo);
+    } else {
+        // Si el término de búsqueda está vacío, devuelve todos los trabajos
+        return traRep.findAll();
+    }
+      
+    }
 
     private void validar(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiException {
 

@@ -83,7 +83,7 @@ public class UsuarioControlador {
     ) throws MiException {
         try {
 
-            usuarioServicio.modificarUsuario(id, nombre, apellido, email, telefono);
+            usuarioServicio.modificarUsuario(id, nombre, apellido, email, telefono, telefono);
             redirectAttributes.addFlashAttribute("mensaje", "Usuario modificado Correctamente");
             return "redirect:../perfil/{id}";
         } catch (MiException ex) {

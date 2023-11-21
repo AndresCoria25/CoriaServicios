@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 ///// Franco
-public interface TrabajoRepositorio extends JpaRepository<Trabajo, String> {
+//public interface TrabajoRepositorio extends JpaRepository<Trabajo, String> {
 
 //    @Query("SELECT t FROM Trabajo t WHERE t.idProveedor = :nombre")
 //    List<Trabajo> buscarPorProveedor(@Param("nombre") String idProveedor);
@@ -22,8 +22,8 @@ public interface TrabajoRepositorio extends JpaRepository<Trabajo, String> {
 //    @Query("SELECT t FROM Trabajo t WHERE t.idUsuario = :nombre")
 //    List<Trabajo> buscarPorUsuario(@Param("nombre") String idUsuario);
 
-    @Query("SELECT t FROM Trabajo t WHERE t.idTrabajo = :nombre")
-    List<Trabajo> buscarPorTrabajo(@Param("nombre") String idTrabajo);
+ //   @Query("SELECT t FROM Trabajo t WHERE t.idTrabajo = :nombre")
+//    List<Trabajo> buscarPorTrabajo(@Param("nombre") String idTrabajo);
 
 /////
 public interface TrabajoRepositorio extends JpaRepository<Trabajo, String>{
