@@ -3,7 +3,8 @@ package Coria.servicios;
 import Coria.entidades.Imagen;
 import Coria.entidades.Usuario;
 import Coria.enumeraciones.Rol;
-import Coria.excepciones.MiExcepcion;
+import Coria.excepciones.MiException;
+import Coria.excepciones.MiException;
 import Coria.repositorios.UsuarioRepositorio;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,13 +35,13 @@ public class UsuarioServicio implements UserDetailsService {
     private ImagenServicio imagenServicio;
 
     @Transactional
-    public void registrar(MultipartFile archivo, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+    public void registrar(MultipartFile archivo, String nombre, String apellido, String email, String telefono, String password) throws MiException {
 
         validar(nombre, apellido, email, telefono, password);
 
         Usuario usuarioExistente = usuarioRepositorio.buscarPorEmail(email);
         if (usuarioExistente != null) {
-            throw new MiExcepcion("El correo electrónico ya está en uso.");
+            throw new MiException("El correo electrónico ya está en uso.");
         }
 
         Usuario usuario = new Usuario();
@@ -56,7 +57,7 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
     @Transactional
-    public Usuario actualizar(MultipartFile archivo, String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+    public Usuario actualizar(MultipartFile archivo, String id, String nombre, String apellido, String email, String telefono, String password) throws MiException {
         validar(nombre, apellido, email, telefono, password);
 
         Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
@@ -65,7 +66,7 @@ public class UsuarioServicio implements UserDetailsService {
             Usuario usuario = respuesta.get();
 
             if (!usuario.getEmail().equals(email) && usuarioRepositorio.buscarPorEmail(email) != null) {
-                throw new MiExcepcion("El email ya está en uso");
+                throw new MiException("El email ya está en uso");
             }
 
             usuario.setNombre(nombre);
@@ -86,31 +87,60 @@ public class UsuarioServicio implements UserDetailsService {
 
             return usuarioRepositorio.save(usuario);
         } else {
-            throw new MiExcepcion("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
+            throw new MiException("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
         }
     }
 
     @Transactional
-    public Usuario modificarUsuario(String id, String nombre, String apellido) throws MiExcepcion {
-
+    public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono) throws MiException {
         if (nombre.isEmpty() || nombre == null) {
-            throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
+            throw new MiException("el nombre no puede ser nulo o estar vacio");
         }
         if (apellido.isEmpty() || apellido == null) {
-            throw new MiExcepcion("el apellido no puede ser nulo o estar vacío");
+            throw new MiException("el apellido no puede ser nulo o estar vacio");
         }
-
+        if (email.isEmpty() || email == null) {
+            throw new MiException("el email no puede ser nulo o estar vacio");
+        }
+        if (telefono.isEmpty()) {
+            throw new MiException("el telefono no puede estar vacio");
+        }
         Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
         if (respuesta.isPresent()) {
             Usuario usuario = respuesta.get();
 
+            // Update user information
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);
-            
+            usuario.setEmail(email);
+            usuario.setTelefono(telefono);
+
             usuarioRepositorio.save(usuario);
-            return usuario; // Devuelve el usuario modificado
+            return usuario; // Returns the modified user
         } else {
-            throw new MiExcepcion("Usuario no encontrado");
+            throw new MiException("Usuario no encontrado");
+        }
+    }
+
+    @Transactional
+    public Usuario actualizarPassword(String id, String currentPassword, String newPassword) throws MiException {
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+
+            // Verificar si la contraseña actual ingresada es correcta
+            if (!new BCryptPasswordEncoder().matches(currentPassword, usuario.getPassword())) {
+                throw new MiException("La contraseña actual no es correcta");
+            }
+
+            // Actualizar la contraseña con la nueva
+            usuario.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+
+            // Guardar el usuario actualizado
+            return usuarioRepositorio.save(usuario);
+        } else {
+            throw new MiException("Usuario no encontrado");
         }
     }
 
@@ -159,9 +189,9 @@ public class UsuarioServicio implements UserDetailsService {
         }
     }
 
-    public void eliminarUsuario(String id) throws MiExcepcion {
+    public void eliminarUsuario(String id) throws MiException {
         if (id.isEmpty() || id.equals("")) {
-            throw new MiExcepcion("el id proporcionado es nulo");
+            throw new MiException("el id proporcionado es nulo");
         } else {
             Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
             if (respuesta.isPresent()) {
@@ -171,24 +201,24 @@ public class UsuarioServicio implements UserDetailsService {
         }
     }
 
-    private void validar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
+    private void validar(String nombre, String apellido, String email, String telefono, String password) throws MiException {
 
         if (nombre.isEmpty() || nombre == null) {
-            throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
+            throw new MiException("el nombre no puede ser nulo o estar vacío");
         }
         if (apellido.isEmpty() || apellido == null) {
-            throw new MiExcepcion("el apellido no puede ser nulo o estar vacío");
+            throw new MiException("el apellido no puede ser nulo o estar vacío");
         }
 
         if (email.isEmpty() || email == null) {
-            throw new MiExcepcion("el email no puede ser nulo o estar vacio");
+            throw new MiException("el email no puede ser nulo o estar vacio");
         }
 
         if (telefono.isEmpty()) {
-            throw new MiExcepcion("el telefono no puede estar vacio");
+            throw new MiException("el telefono no puede estar vacio");
         }
         if (password.isEmpty() || password == null || password.length() <= 5) {
-            throw new MiExcepcion("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
+            throw new MiException("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
         }
 
     }

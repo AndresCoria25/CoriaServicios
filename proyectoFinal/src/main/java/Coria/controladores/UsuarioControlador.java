@@ -6,7 +6,8 @@
 package Coria.controladores;
 
 import Coria.entidades.Usuario;
-import Coria.excepciones.MiExcepcion;
+import Coria.excepciones.MiException;
+import Coria.excepciones.MiException;
 import Coria.servicios.UsuarioServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -42,8 +43,8 @@ public class UsuarioControlador {
         return "index.html";
 
     }
-    //CORRESPONDE AL ADMIN
 
+    //CORRESPONDE AL ADMIN
     @GetMapping("/lista")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public String listarUsuarios(ModelMap modelo) {
@@ -51,6 +52,7 @@ public class UsuarioControlador {
         modelo.addAttribute("listaUsuarios", listaUsuarios);
         return "listaUsuarios.html";
     }
+    //CORRESPONDE AL ADMIN
 
     @PostMapping("/eliminar/{id}")
     public String eliminarUsuario(@PathVariable String id, ModelMap model) {
@@ -71,18 +73,55 @@ public class UsuarioControlador {
     }
 
     @PostMapping("/modificar/{id}")
-    public String modificar(@PathVariable String id, @RequestParam String nombre, @RequestParam String apellido, RedirectAttributes redirectAttributes) throws MiExcepcion {
+    public String modificar(
+            @PathVariable String id,
+            @RequestParam String nombre,
+            @RequestParam String apellido,
+            @RequestParam String email,
+            @RequestParam String telefono,
+            RedirectAttributes redirectAttributes
+    ) throws MiException {
         try {
-            usuarioServicio.modificarUsuario(id, nombre, apellido);
+
+            usuarioServicio.modificarUsuario(id, nombre, apellido, email, telefono);
             redirectAttributes.addFlashAttribute("mensaje", "Usuario modificado Correctamente");
             return "redirect:../perfil/{id}";
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
             System.out.println(ex.getMessage());
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
             return "redirect:../perfil/{id}";
         }
     }
 
+    @GetMapping("/modificar1/{id}")
+    public String mostrarFormularioModificarContrasena1(ModelMap modelo) {
+        // Lógica para cargar datos necesarios, si es necesario
+        modelo.addAttribute("mensaje", "¡Bienvenido al formulario de modificación de contraseña!");
+        return "modificar1";
+    }
+
+    @PostMapping("/modificar1/{id}")
+    public String modificar1(
+            @PathVariable String id,
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            @RequestParam String newPassword2,
+            RedirectAttributes redirectAttributes
+    ) throws MiException {
+        try {
+            if (!newPassword.equals(newPassword2)) {
+                throw new MiException("Las contraseñas no coinciden");
+            }
+
+            usuarioServicio.actualizarPassword(id, currentPassword, newPassword);
+            redirectAttributes.addFlashAttribute("mensaje", "Contraseña modificada correctamente");
+            return "redirect:../perfil1/{id}";
+        } catch (MiException ex) {
+            System.out.println(ex.getMessage());
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            return "redirect:../perfil1/{id}";
+        }
+    }
 
     @GetMapping("/registrar")//localhost:8080/registrar
     public String registrar() {
@@ -91,12 +130,12 @@ public class UsuarioControlador {
 
     @PostMapping("/registro")
     public String registro(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String email,
-            @RequestParam String password, String password2, @RequestParam String telefono, MultipartFile archivo, RedirectAttributes redirectAttributes) throws MiExcepcion {
+            @RequestParam String password, String password2, @RequestParam String telefono, MultipartFile archivo, RedirectAttributes redirectAttributes) throws MiException {
         try {
             usuarioServicio.registrar(archivo, nombre, apellido, email, telefono, password);
             redirectAttributes.addFlashAttribute("mensaje", "Registro Exitoso. Ahora puedes Iniciar Sesión.");
             return "redirect:/";
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
             return "redirect:/";
         }
@@ -128,13 +167,40 @@ public class UsuarioControlador {
             Usuario usuario = usuarioServicio.actualizar(archivo, id, nombre, apellido, email, telefono, password);
             session.setAttribute("usuariosession", usuario);
             return "redirect:/";
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
             System.out.println("Error en el controlador de perfil: " + ex.getMessage());
             modelo.put("error", ex.getMessage());
             ex.printStackTrace();
             Usuario usuario = usuarioServicio.getOne(id);
             modelo.put("usuario", usuario);
             return "redirect:/perfil/{id}";
+        }
+    }
+
+    @GetMapping("/perfil1/{id}")
+    public String mostrarFormulario1(@PathVariable String id, ModelMap modelo) {
+        // Lógica para obtener el usuario por ID y agregarlo al modelo
+        Usuario usuario = usuarioServicio.getOne(id);
+        modelo.addAttribute("usuario", usuario);
+        return "perfil_usuario1.html";
+    }
+
+    @PostMapping("/perfil1/{id}")
+    public String actualizarContraseña(@PathVariable String id, @RequestParam String password, ModelMap modelo,
+            HttpSession session) throws Exception {
+        try {
+            System.out.println("Controlador de perfil ejecutado. ID: " + id);
+
+            Usuario usuario = usuarioServicio.actualizarPassword(id, password, password);
+            session.setAttribute("usuariosession", usuario);
+            return "redirect:/";
+        } catch (MiException ex) {
+            System.out.println("Error en el controlador de perfil: " + ex.getMessage());
+            modelo.put("error", ex.getMessage());
+            ex.printStackTrace();
+            Usuario usuario = usuarioServicio.getOne(id);
+            modelo.put("usuario", usuario);
+            return "redirect:/perfil1/{id}";
         }
     }
 }

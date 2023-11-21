@@ -8,7 +8,7 @@ package Coria.servicios;
 import Coria.entidades.Proveedor;
 import Coria.entidades.Usuario;
 import Coria.enumeraciones.Rol;
-import Coria.excepciones.MiExcepcion;
+import Coria.excepciones.MiException;
 import Coria.repositorios.ProveedorRepositorio;
 import dto.ProveedorDto;
 
@@ -40,12 +40,12 @@ public class ProveedorServicio implements UserDetailsService {
         return provRep.findByTipoServicio(tipoServicio);
     }
     @Transactional
-    public void registrar(String nombre, String apellido, String email, String telefono, String password, String nombreEmpresa, String tipoServicio) throws MiExcepcion {
+    public void registrar(String nombre, String apellido, String email, String telefono, String password, String nombreEmpresa, String tipoServicio) throws MiException {
         
         validar(nombre, apellido, email, telefono, password, nombreEmpresa, tipoServicio);
         Proveedor usuarioExistente = provRep.buscarPorEmail(email);
         if (usuarioExistente != null) {
-            throw new MiExcepcion("El correo electrónico ya está en uso.");
+            throw new MiException("El correo electrónico ya está en uso.");
         }
         
         Proveedor prov = new Proveedor();
@@ -84,7 +84,7 @@ public class ProveedorServicio implements UserDetailsService {
     }
     
     @Transactional
-    public void actualizar(String nombre, String apellido, String email, String telefono, String password, String nombreEmpresa, String tipoServicio) throws MiExcepcion {
+    public void actualizar(String nombre, String apellido, String email, String telefono, String password, String nombreEmpresa, String tipoServicio) throws MiException {
         validar(nombre, apellido, email, telefono, password, nombreEmpresa, tipoServicio);
         
         Optional<Proveedor> optionalProveedor = provRep.findById(nombreEmpresa);
@@ -95,61 +95,61 @@ public class ProveedorServicio implements UserDetailsService {
             
             provRep.save(prov);
         } else {
-            throw new MiExcepcion("Proveedor no encontrado");
+            throw new MiException("Proveedor no encontrado");
         }
     }
     
     @Transactional
-    public void eliminar(String nombreEmpresa) throws MiExcepcion {
+    public void eliminar(String nombreEmpresa) throws MiException {
         if (nombreEmpresa == null || nombreEmpresa.isEmpty()) {
-            throw new MiExcepcion("Nombre de empresa no válido");
+            throw new MiException("Nombre de empresa no válido");
         }
         
         Optional<Proveedor> optionalProveedor = provRep.findById(nombreEmpresa);
         if (optionalProveedor.isPresent()) {
             provRep.deleteByNombreEmpresa(nombreEmpresa);
         } else {
-            throw new MiExcepcion("Proveedor no encontrado");
+            throw new MiException("Proveedor no encontrado");
         }
     }
     
-    public Proveedor obtenerPorNombre(String nombreEmpresa) throws MiExcepcion {
+    public Proveedor obtenerPorNombre(String nombreEmpresa) throws MiException {
         if (nombreEmpresa == null || nombreEmpresa.isEmpty()) {
-            throw new MiExcepcion("Nombre de empresa no válido");
+            throw new MiException("Nombre de empresa no válido");
         }
         
         Optional<Proveedor> optionalProveedor = provRep.findById(nombreEmpresa);
         if (optionalProveedor.isPresent()) {
             return optionalProveedor.get();
         } else {
-            throw new MiExcepcion("Proveedor no encontrado");
+            throw new MiException("Proveedor no encontrado");
         }
     }
     
-    private void validar(String nombre, String apellido, String email, String telefono, String password, String nombreEmpresa, String tipoServicio) throws MiExcepcion {
+    private void validar(String nombre, String apellido, String email, String telefono, String password, String nombreEmpresa, String tipoServicio) throws MiException {
         
         if (nombre.isEmpty() || nombre == null) {
-            throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
+            throw new MiException("el nombre no puede ser nulo o estar vacío");
         }
         if (apellido.isEmpty() || apellido == null) {
-            throw new MiExcepcion("el apellido no puede ser nulo o estar vacío");
+            throw new MiException("el apellido no puede ser nulo o estar vacío");
         }
         
         if (email.isEmpty() || email == null) {
-            throw new MiExcepcion("el email no puede ser nulo o estar vacio");
+            throw new MiException("el email no puede ser nulo o estar vacio");
         }
         
         if (telefono.isEmpty()) {
-            throw new MiExcepcion("el telefono no puede estar vacio");
+            throw new MiException("el telefono no puede estar vacio");
         }
         if (password.isEmpty() || password == null || password.length() <= 5) {
-            throw new MiExcepcion("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
+            throw new MiException("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
         }
         if (nombreEmpresa.isEmpty() || nombreEmpresa == null) {
-            throw new MiExcepcion("el nombre de empresa no puede ser nulo o estar vacío");
+            throw new MiException("el nombre de empresa no puede ser nulo o estar vacío");
         }
         if (tipoServicio.isEmpty() || tipoServicio == null) {
-            throw new MiExcepcion("el tipo de servicio no puede ser nulo o estar vacio");
+            throw new MiException("el tipo de servicio no puede ser nulo o estar vacio");
         }
         
     }

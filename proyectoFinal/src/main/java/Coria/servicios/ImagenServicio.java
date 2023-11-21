@@ -1,7 +1,7 @@
 package Coria.servicios;
 
 import Coria.entidades.Imagen;
-import Coria.excepciones.MiExcepcion;
+import Coria.excepciones.MiException;
 import Coria.repositorios.ImagenRepositorio;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,7 @@ public class ImagenServicio {
     @Autowired
     private ImagenRepositorio imagenRepositorio;
 
-    public Imagen guardar(MultipartFile archivo) throws MiExcepcion {
+    public Imagen guardar(MultipartFile archivo) throws MiException {
         if (archivo != null) {
             try {
 
@@ -33,7 +33,7 @@ public class ImagenServicio {
         return null;
     }
 
-    public Imagen actualizar(MultipartFile archivo, String idImagen) throws MiExcepcion {
+    public Imagen actualizar(MultipartFile archivo, String idImagen) throws MiException {
         if (archivo != null) {
             try {
 

@@ -8,7 +8,7 @@ package Coria.controladores;
 ///// Franco
 
 import Coria.entidades.Proveedor;
-import Coria.excepciones.MiExcepcion;
+import Coria.excepciones.MiException;
 import Coria.servicios.ProveedorServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,7 +46,7 @@ public class ProveedorControlador {
 //        try {
 //            provServ.registrar(nombreEmpresa, tipoServicio, calificacion);
 //            modelo.put("exito", "El Proveedor fue registrado correctamente");
-//        } catch (MiExcepcion ex) {
+//        } catch (MiException ex) {
 //            modelo.put("error", ex.getMessage());
 //            return "proveedor_form.html";
 //        }
@@ -54,14 +54,14 @@ public class ProveedorControlador {
 //    }
     
   @PostMapping("/registroP")
-    public String registro(@ModelAttribute Proveedor proveedor, RedirectAttributes redirectAttributes) throws MiExcepcion {
+    public String registro(@ModelAttribute Proveedor proveedor, RedirectAttributes redirectAttributes) throws MiException {
         try {
             provServ.registrar(proveedor.getNombre(), proveedor.getApellido(), proveedor.getEmail(),
                     proveedor.getTelefono(), proveedor.getPassword(), proveedor.getNombreEmpresa(),
                     proveedor.getTipoServicio());
             redirectAttributes.addFlashAttribute("mensaje", "El Proveedor fue registrado correctamente");
             return "redirect:/";
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
             return "redirect:/";
         }
@@ -73,7 +73,7 @@ public class ProveedorControlador {
             Proveedor proveedor = provServ.obtenerPorNombre(nombreEmpresa);
             modelo.put("proveedor", proveedor);
             return "editar_proveedor.html";
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
             modelo.put("error", ex.getMessage());
             return "error.html";
         }
@@ -84,7 +84,7 @@ public class ProveedorControlador {
         try {
             provServ.actualizar(nombreEmpresa, tipoServicio, calificacion, calificacion, tipoServicio, nombreEmpresa, tipoServicio);
             modelo.put("exito", "Proveedor actualizado correctamente");
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
             modelo.put("error", ex.getMessage());
             return "editar_proveedor.html";
         }
@@ -96,7 +96,7 @@ public class ProveedorControlador {
         try {
             provServ.eliminar(nombreEmpresa);
             modelo.put("exito", "Proveedor eliminado correctamente");
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
             modelo.put("error", ex.getMessage());
         }
         return "redirect:/proveedor/listar";

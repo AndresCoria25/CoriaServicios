@@ -1,8 +1,8 @@
-package Coria.Controladores;
+package Coria.controladores;
 
 
 import Coria.entidades.Usuario;
-import Coria.excepciones.MiExcepcion;
+import Coria.excepciones.MiException;
 
 import Coria.servicios.UsuarioServicio;
 import java.util.List;
@@ -45,7 +45,7 @@ public class PortalControlador {
             modelo.put("exito", "Usuario registrado correctamente!");
 
             return "index.html";
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
 
             modelo.put("error", ex.getMessage());
             modelo.put("nombre", nombre);
@@ -97,7 +97,7 @@ public class PortalControlador {
             usuarioServicio.actualizar(archivo, id, nombre, apellido, email, telefono, password);
             modelo.put("exito", "Usuario actualizado correctamente!");
             return "inicio.html";
-        } catch (MiExcepcion ex) {
+        } catch (MiException ex) {
 
             modelo.put("error", ex.getMessage());
             modelo.put("usuario", usuario);

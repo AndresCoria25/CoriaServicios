@@ -6,7 +6,7 @@
 package Coria.servicios;
 
 import Coria.entidades.Trabajo;
-import Coria.excepciones.MiExcepcion;
+import Coria.excepciones.MiException;
 import Coria.repositorios.TrabajoRepositorio;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class TrabajoServicio {
     private TrabajoRepositorio traRep;
 
     @Transactional
-    public void crearTrabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
+    public void crearTrabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiException {
         validar(idTrabajo, estado, tipo, duracion, presupuesto);
         Trabajo trab = new Trabajo();
 
@@ -33,7 +33,7 @@ public class TrabajoServicio {
     }
 
    @Transactional
-public void modificarTrabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
+public void modificarTrabajo(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiException {
     validar(idTrabajo, estado, tipo, duracion, presupuesto);
 
     Optional<Trabajo> respuesta = traRep.findById(idTrabajo);
@@ -45,27 +45,27 @@ public void modificarTrabajo(String idTrabajo, String estado, String tipo, Integ
         tra.setTipo(tipo);
         traRep.save(tra);
     } else {
-        throw new MiExcepcion("El trabajo no existe");
+        throw new MiException("El trabajo no existe");
     }
 }
 
-    private void validar(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiExcepcion {
+    private void validar(String idTrabajo, String estado, String tipo, Integer duracion, Double presupuesto) throws MiException {
 
         if (idTrabajo.isEmpty() || idTrabajo == null) {
-            throw new MiExcepcion("el id del trabajo no puede ser nulo o estar vacío");
+            throw new MiException("el id del trabajo no puede ser nulo o estar vacío");
         }
         if (estado.isEmpty() || estado == null) {
-            throw new MiExcepcion("el estado no puede ser nulo o estar vacío");
+            throw new MiException("el estado no puede ser nulo o estar vacío");
         }
         if (tipo.isEmpty() || tipo == null) {
-            throw new MiExcepcion("el tipo de trabajo no puede ser nulo o estar vacío");
+            throw new MiException("el tipo de trabajo no puede ser nulo o estar vacío");
         }
         if (duracion == null) {
-            throw new MiExcepcion("la duración no puede estar vacía");
+            throw new MiException("la duración no puede estar vacía");
         }
 
         if (presupuesto == null) {
-            throw new MiExcepcion("el presupuesto no puede estar vacío");
+            throw new MiException("el presupuesto no puede estar vacío");
         }
 
     }
