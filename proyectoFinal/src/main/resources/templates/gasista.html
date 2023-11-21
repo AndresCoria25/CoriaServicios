@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <title>Gasistas</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- BOOSTRAP -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- ICONO DE PESTAÑA -->
+        <link rel="icon" href="/imagenes/logo.png" type="icon/png">
+        <!-- Tus estilos personalizados u hojas de estilo adicionales -->
+        <link href="/gasista.css" rel="stylesheet" type="text/css"/>
+
+    </head>
+    <body>
+
+        <!-- FRAGMENTS DEL NAVBAR -->
+        <nav th:replace="/fragments/navbar :: nav"></nav>
+
+        <div class="container my-5">
+            <h1 class="Sunday" align="center">Gasistas Registrados</h1>
+            <div class="mt-5"></div>
+            <!-- Itera sobre la lista de gasistas -->
+            <div class="row">
+                <div th:each="gasista : ${gasistas}" class="col-sm-6 col-md-4 col-lg-3 mb-3">
+                    <div class="card bg-dark text-white">
+                        <!-- Imagen del gasista -->
+                        <img src="/imagenes/imagen5.jpeg" class="card-img-top" alt="Gasista Image">
+                        <div class="card-body">
+                            <!-- Etiqueta para Empresa -->
+                            <p><strong>Empresa:</strong> <span th:text="${gasista.nombreEmpresa}"></span></p>
+                            <!-- Etiqueta para Nombre -->
+                            <p><strong>Nombre:</strong> <span th:text="${gasista.nombre}"></span></p>
+                            <!-- Etiqueta para Apellido -->
+                            <p><strong>Apellido:</strong> <span th:text="${gasista.apellido}"></span></p>
+                            <!-- Etiqueta para Teléfono -->
+                            <p><strong>Teléfono:</strong> <span th:text="${gasista.telefono}"></span></p>
+                            <!-- Etiqueta para Email -->
+                            <p><strong>Email:</strong> <span th:text="${gasista.email}"></span></p>
+                            <!-- Botón Contratar -->
+                            <a th:href="@{'/contratar/' + ${gasista.id}}" class="btn btn-primary text-white shadow">Contratar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <br><br><br><br><br><br><br><br><br><br><br><br>
+
+
+        <!-- FRAGMENTS DEL FOOTER -->
+        <div th:replace="/fragments/footer :: div"></div>
+
+        <!-- Scripts de Bootstrap y jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+</html>

@@ -3,7 +3,8 @@ package Coria.servicios;
 import Coria.entidades.Imagen;
 import Coria.entidades.Usuario;
 import Coria.enumeraciones.Rol;
-import Coria.excepciones.MiExcepcion;
+import Coria.excepciones.MiException;
+import Coria.excepciones.MiException;
 import Coria.repositorios.UsuarioRepositorio;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,125 +31,122 @@ public class UsuarioServicio implements UserDetailsService {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
-//    @Autowired
-//    private ImagenServicio imagenServicio;
-    @Transactional
-///// Franco
-    public void registrar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-=======
-    public void registrar(MultipartFile archivo, String nombre, String email,String telefono, String password) throws MiExcepcion {
+    @Autowired
+    private ImagenServicio imagenServicio;
 
-        validar(nombre, email, telefono, password);
-///// Desarrolladores
+    @Transactional
+    public void registrar(MultipartFile archivo, String nombre, String apellido, String email, String telefono, String password) throws MiException {
 
         validar(nombre, apellido, email, telefono, password);
 
         Usuario usuarioExistente = usuarioRepositorio.buscarPorEmail(email);
         if (usuarioExistente != null) {
-            throw new MiExcepcion("El correo electrónico ya está en uso.");
+            throw new MiException("El correo electrónico ya está en uso.");
         }
 
         Usuario usuario = new Usuario();
-        usuario.setNombre(nombre);
-        usuario.setEmail(email);
-        usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-        usuario.setRol(Rol.USER);
-//        Imagen imagen = imagenServicio.guardar(archivo);
-//        usuario.setImagen(imagen);
-        usuarioRepositorio.save(usuario);
-    }
-///// Franco
-@Transactional
-public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-    validar(nombre, apellido, email, telefono, password);
-
-    Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
-    
-    if (respuesta.isPresent()) {
-        Usuario usuario = respuesta.get();
-        
-        if (!usuario.getEmail().equals(email) && usuarioRepositorio.buscarPorEmail(email) != null) {
-            throw new MiExcepcion("El email ya está en uso");
-/////
-
-    @Transactional
-    public void actualizar(MultipartFile archivo, String id, String nombre, String email,String telefono, String password) throws MiExcepcion {
-
-        validar(nombre, email, telefono, password);
-
-        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
-        if (respuesta.isPresent()) {
-            Usuario usuario = respuesta.get();
-
-            if (!usuario.getEmail().equals(email)) {
-                if (usuarioRepositorio.buscarPorEmail(email) != null) {
-                    throw new MiExcepcion("el email ya esta en uso");
-                }
-            }
-            usuario.setNombre(nombre);
-            usuario.setEmail(email);
-            usuario.setTelefono(telefono);
-            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-            usuario.setRol(usuario.getRol());
-            String idImagen = null;
-
-            if (usuario.getImagen() != null) {
-                idImagen = usuario.getImagen().getId();
-            }
-
-            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
-            usuario.setImagen(imagen);
-            usuarioRepositorio.save(usuario);
-///// Desarrolladores
-        }
-        
         usuario.setNombre(nombre);
         usuario.setApellido(apellido);
         usuario.setEmail(email);
         usuario.setTelefono(telefono);
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-        usuario.setRol(usuario.getRol());
-        
-        // Actualizar la imagen si es necesario
-        // ...
-        
-        return usuarioRepositorio.save(usuario);
-    } else {
-        throw new MiExcepcion("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
+        usuario.setRol(Rol.USER);
+        Imagen imagen = imagenServicio.guardar(archivo);
+        usuario.setImagen(imagen);
+        usuarioRepositorio.save(usuario);
     }
-}
 
-//    @Transactional
-//    public Usuario actualizar(String id, String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-//
-//        validar(nombre, apellido, email, telefono, password);
-//
-//        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
-//        if (respuesta.isPresent()) {
-//            Usuario usuario = respuesta.get();
-//
-//            if (!usuario.getEmail().equals(email)) {
-//                if (usuarioRepositorio.buscarPorEmail(email) != null) {
-//                    throw new MiExcepcion("el email ya esta en uso");
-//                }
-//            }
-//            usuario.setNombre(nombre);
-//            usuario.setApellido(apellido);
-//            usuario.setEmail(email);
-//            usuario.setTelefono(telefono);
-//            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-//            usuario.setRol(usuario.getRol());
-////            String idImagen = null;
-//
-////            if (usuario.getImagen() != null) {
-////                idImagen = usuario.getImagen().getId();
-////            }
-////            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
-////            usuario.setImagen(imagen);
-//            usuarioRepositorio.save(usuario);
-//        }
-//        return actualizar(id, nombre, apellido, email, telefono, password);
-//    }
+    @Transactional
+    public Usuario actualizar(MultipartFile archivo, String id, String nombre, String apellido, String email, String telefono, String password) throws MiException {
+        validar(nombre, apellido, email, telefono, password);
+
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+
+            if (!usuario.getEmail().equals(email) && usuarioRepositorio.buscarPorEmail(email) != null) {
+                throw new MiException("El email ya está en uso");
+            }
+
+            usuario.setNombre(nombre);
+            usuario.setApellido(apellido);
+            usuario.setEmail(email);
+            usuario.setTelefono(telefono);
+            usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+            usuario.setRol(usuario.getRol());
+
+            String idImagen = null;
+
+            if (usuario.getImagen() != null) {
+                idImagen = usuario.getImagen().getId();
+            }
+            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
+            usuario.setImagen(imagen);
+            usuarioRepositorio.save(usuario);
+
+            return usuarioRepositorio.save(usuario);
+        } else {
+            throw new MiException("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
+        }
+    }
+
+    @Transactional
+    public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono,String currentPassword) throws MiException {
+        if (nombre.isEmpty() || nombre == null) {
+            throw new MiException("el nombre no puede ser nulo o estar vacio");
+        }
+        if (apellido.isEmpty() || apellido == null) {
+            throw new MiException("el apellido no puede ser nulo o estar vacio");
+        }
+        if (email.isEmpty() || email == null) {
+            throw new MiException("el email no puede ser nulo o estar vacio");
+        }
+        if (telefono.isEmpty()) {
+            throw new MiException("el telefono no puede estar vacio");
+        }
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+
+            // Verificar si la contraseña actual ingresada es correcta
+            if (!new BCryptPasswordEncoder().matches(currentPassword, usuario.getPassword())) {
+                throw new MiException("La contraseña actual no es correcta");
+            }
+            // Update user information
+            usuario.setNombre(nombre);
+            usuario.setApellido(apellido);
+            usuario.setEmail(email);
+            usuario.setTelefono(telefono);
+
+            usuarioRepositorio.save(usuario);
+            return usuario; // Returns the modified user
+        } else {
+            throw new MiException("Usuario no encontrado");
+        }
+    }
+
+    @Transactional
+    public Usuario actualizarPassword(String id, String currentPassword, String newPassword) throws MiException {
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+
+            // Verificar si la contraseña actual ingresada es correcta
+            if (!new BCryptPasswordEncoder().matches(currentPassword, usuario.getPassword())) {
+                throw new MiException("La contraseña actual no es correcta");
+            }
+
+            // Actualizar la contraseña con la nueva
+            usuario.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+
+            // Guardar el usuario actualizado
+            return usuarioRepositorio.save(usuario);
+        } else {
+            throw new MiException("Usuario no encontrado");
+        }
+    }
 
     public Usuario getOne(String id) {
         return usuarioRepositorio.getOne(id);
@@ -195,39 +193,38 @@ public Usuario actualizar(String id, String nombre, String apellido, String emai
         }
     }
 
-///// Franco
-    private void validar(String nombre, String apellido, String email, String telefono, String password) throws MiExcepcion {
-=======
-    private void validar(String nombre, String email, String telefono, String password) throws MiExcepcion {
-///// Desarrolladores
+    public void eliminarUsuario(String id) throws MiException {
+        if (id.isEmpty() || id.equals("")) {
+            throw new MiException("el id proporcionado es nulo");
+        } else {
+            Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+            if (respuesta.isPresent()) {
+                Usuario usuario = respuesta.get();
+                usuarioRepositorio.delete(usuario);
+            }
+        }
+    }
+
+    private void validar(String nombre, String apellido, String email, String telefono, String password) throws MiException {
 
         if (nombre.isEmpty() || nombre == null) {
-            throw new MiExcepcion("el nombre no puede ser nulo o estar vacío");
+            throw new MiException("el nombre no puede ser nulo o estar vacío");
         }
         if (apellido.isEmpty() || apellido == null) {
-            throw new MiExcepcion("el apellido no puede ser nulo o estar vacío");
+            throw new MiException("el apellido no puede ser nulo o estar vacío");
         }
 
         if (email.isEmpty() || email == null) {
-            throw new MiExcepcion("el email no puede ser nulo o estar vacio");
+            throw new MiException("el email no puede ser nulo o estar vacio");
         }
-///// Franco
 
-=======
-         
-///// Desarrolladores
         if (telefono.isEmpty()) {
-            throw new MiExcepcion("el telefono no puede estar vacio");
+            throw new MiException("el telefono no puede estar vacio");
         }
         if (password.isEmpty() || password == null || password.length() <= 5) {
-            throw new MiExcepcion("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
+            throw new MiException("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
         }
 
-///// Franco
-=======
-       
-
-///// Desarrolladores
     }
 
     @Override

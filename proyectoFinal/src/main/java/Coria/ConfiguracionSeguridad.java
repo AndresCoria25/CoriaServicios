@@ -5,6 +5,7 @@
  */
 package Coria;
 
+import Coria.servicios.ProveedorServicio;
 import Coria.servicios.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -28,18 +29,24 @@ public class ConfiguracionSeguridad extends WebSecurityConfigurerAdapter {
     private UsuarioServicio usuarioServicio;
 
     @Autowired
+    private ProveedorServicio proveedorServicio;
+
+    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(usuarioServicio)
-                .passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(usuarioServicio).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(proveedorServicio).passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
+                .antMatchers("/", "/index.css", "/login", "/login.css", "/registrar", "/registrarP", "/registro", "/registroP", "/registro.css", "/registroP.css").permitAll()
+                .antMatchers("/css/**").permitAll() // If needed for other CSS files
+                .antMatchers("/resources/**", "/static/**", "/js/**", "/imagenes/**").permitAll()
                 .antMatchers("/admin/*").hasRole("ADMIN")
-                .antMatchers("/css/*", "/js/*", "/imagenes/*").permitAll()
-                .antMatchers("/", "/login", "/registrar", "/registro").permitAll()
+                .antMatchers("/usuario/**").hasRole("USUARIO")
+                .antMatchers("/proveedor/**").hasRole("PROVEEDOR")
                 .anyRequest().fullyAuthenticated()
                 .and().formLogin()
                 .loginPage("/login")
@@ -55,6 +62,5 @@ public class ConfiguracionSeguridad extends WebSecurityConfigurerAdapter {
                 .and().csrf()
                 .disable();
     }
-    
-}
 
+}

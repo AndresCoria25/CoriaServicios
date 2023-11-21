@@ -8,128 +8,43 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- ICONO DE PESTAÑA -->
         <link rel="icon" href="/imagenes/logo.png" type="icon/png"> <!-- CAMBIA EL ICONO DE LA PESTAÑA DE TU PAGINA  --> 
+        <!-- Tus estilos personalizados u hojas de estilo adicionales -->
+        <link href="/index.css" rel="stylesheet" type="text/css"/>
 
 
         <!-- Etiquetas Open Graph -->
-        <meta property="og:title" content="CREA TU RECIBO"> <!-- CAMBIA EL TITULO -->
+        <meta property="og:title" content="CORIA SERVICIOS"> <!-- CAMBIA EL TITULO -->
         <meta property="og:type" content="website">
-        <meta property="og:description" content="Desde esta web podras crear tu RECIBO de SUELDO"><!-- CAMBIA LA DESCRIPCION DE LA PAGINA -->
+        <meta property="og:description" content="Contrata tu Proveedor de Servicios Coria"><!-- CAMBIA LA DESCRIPCION DE LA PAGINA -->
         <meta property="og:image" content="https://play-code.onrender.com/imagenes/calculando.jpg"> <!-- CAMBIA LA DIRECCION DE TU PAGINA + LA IMAGEN QUE QUIERES MOSTRAR AL COMPARTIR LA URL -->
         <meta property="og:url" content="https://play-code.onrender.com/"> <!-- CAMBIA  LA DIRECCION DE TU PAGINA -->
 
-        <style>
 
-            body {
-                background: #FDC830;  /* fallback for old browsers */
-                background: -webkit-linear-gradient(to right, #F37335, #FDC830);  /* Chrome 10-25, Safari 5.1-6 */
-                background: linear-gradient(to right, #F37335, #FDC830); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-            }
-            .image-container {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .image-container figure {
-                text-align: center;
-                margin: 10px;
-            }
-
-            .image-container img {
-                max-width: 100%;
-                border: 2px solid transparent;
-                transition: border 0.3s;
-                margin: 10px; /* Agrega un espacio entre las imágenes y el borde */
-                padding: 30px; /* Agrega espacio dentro del borde */
-            }
-
-            .image-container a {
-                text-decoration: none;
-            }
-
-            .image-container figcaption {
-                font-size: 14px;
-                margin-top: 5px;
-            }
-            .image-container img:hover {
-                border: 1px solid #000; /* Cambia el color del borde al pasar el mouse sobre la imagen */
-            }
-            footer {
-                background-color: #000000;
-                opacity: 0.8;
-                color: #fff;
-                padding: 15px 0;
-                text-align: center;
-            }
-
-            /* Error message de registro*/
-            .alert-danger {
-                background-color: #f8d7da; /* Red background color */
-                max-width: 400px; /* Adjust the max-width as needed */
-                margin: 0 auto; /* Center the alert horizontally */
-            }
-
-            /* Success message de registro*/
-            .alert-success {
-                background-color: #d4edda; /* Green background color */
-                max-width: 400px; /* Adjust the max-width as needed */
-                margin: 0 auto; /* Center the alert horizontally */
-            }
-
-        </style>
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-            <div class="container">
-                <a class="navbar-brand" href="http://localhost:8080/">CORIA SERVICIOS</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
+      <!-- FRAGMENTS DEL NAVBAR -->
+        <nav th:replace="/fragments/navbar2 :: nav"></nav>
 
-                      
-                        <li class="nav-item">
-                            <a class="nav-link active" th:if="${session.usuariosession == null}" th:href="@{/login}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" th:href="@{/registrar}">Registro</a>
-                        </li> 
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Contacto</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Perfil</a>
-                        </li>
-                       
 
-                        <form class="d-flex" role="search">
-                            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Buscar</button>
-                        </form>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+
 
         <div class="image-container">
             <figure>
                 <a href="#">
-                    <img src="/imagenes/gasista.png" alt="Gasista">
+                    <img src="/imagenes/ingeniero.png" alt="Gasista">
                 </a>
                 <figcaption><h1>Gasista</h1></figcaption>
             </figure>
             <figure>
                 <a href="#">
-                    <img src="/imagenes/electricista.png" alt="Electricista">
+                    <img src="/imagenes/ingeniero5.png" alt="Electricista">
                 </a>
                 <figcaption><h1>Electricista</h1></figcaption>
             </figure>
             <figure>
                 <a href="#">
-                    <img src="/imagenes/plomero.png" alt="Plomero">
+                    <img src="/imagenes/ingeniero7.png" alt="Plomero">
                 </a>
                 <figcaption><h1>Plomero</h1></figcaption>
             </figure>
@@ -144,12 +59,15 @@
         <div th:if="${mensaje}" class="alert alert-success text-center">
             <p th:text="${mensaje}" class="text-large">Mensaje de éxito personalizado</p>
         </div>
+        <br><br><br><br>
+        <!-- FRAGMENTS DEL FOOTER -->
+        <div th:replace="/fragments/footer :: div"></div>
 
-        <footer class="fixed-bottom">
-            <div class="container">
-                <p>&copy; 2023 CoriaServicios. Todos los derechos reservados.</p>
-            </div>
-        </footer>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Otras dependencias y estilos -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Otros scripts -->
 
     </body>
 </html>
