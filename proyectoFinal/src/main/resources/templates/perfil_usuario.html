@@ -41,6 +41,10 @@
                     <label for="telefono" class="form-label">Telefono</label> <!-- Corrected label -->
                     <input type='text' name='telefono' th:value='${usuario.telefono}' class="form-control" id="telefono">
                 </div>
+                <div class="col-md-6">
+                    <label for="currentPassword" class="form-label">Para Modificar los datos Ingresa tu Password</label>
+                    <input type="password" name="currentPassword" class="form-control" id="currentPassword" required>
+                </div>
                 <div class="col-12 d-flex justify-content-center">
                     <button type="submit" class="btn btn-dark">Modificar</button>
                 </div>

@@ -92,7 +92,7 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
     @Transactional
-    public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono) throws MiException {
+    public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono,String currentPassword) throws MiException {
         if (nombre.isEmpty() || nombre == null) {
             throw new MiException("el nombre no puede ser nulo o estar vacio");
         }
@@ -109,6 +109,10 @@ public class UsuarioServicio implements UserDetailsService {
         if (respuesta.isPresent()) {
             Usuario usuario = respuesta.get();
 
+            // Verificar si la contraseña actual ingresada es correcta
+            if (!new BCryptPasswordEncoder().matches(currentPassword, usuario.getPassword())) {
+                throw new MiException("La contraseña actual no es correcta");
+            }
             // Update user information
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);

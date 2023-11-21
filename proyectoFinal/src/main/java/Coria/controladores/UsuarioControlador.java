@@ -79,11 +79,12 @@ public class UsuarioControlador {
             @RequestParam String apellido,
             @RequestParam String email,
             @RequestParam String telefono,
+            @RequestParam String currentPassword,
             RedirectAttributes redirectAttributes
     ) throws MiException {
         try {
 
-            usuarioServicio.modificarUsuario(id, nombre, apellido, email, telefono);
+            usuarioServicio.modificarUsuario(id, nombre, apellido, email, telefono,currentPassword);
             redirectAttributes.addFlashAttribute("mensaje", "Usuario modificado Correctamente");
             return "redirect:../perfil/{id}";
         } catch (MiException ex) {
