@@ -26,7 +26,7 @@ public class Calificacion {
     private String idCalificacion;
     private String idProveedor;
     private String idUsuario;
-    private Integer calificacion;
+    private String calificacion;
     @Temporal(TemporalType.DATE)
     private Date fechaBaja;
     private String comentario;
@@ -58,11 +58,11 @@ public class Calificacion {
         this.idUsuario = idUsuario;
     }
 
-    public Integer getCalificacion() {
+    public String getCalificacion() {
         return calificacion;
     }
 
-    public void setCalificacion(Integer calificacion) {
+    public void setCalificacion(String calificacion) {
         this.calificacion = calificacion;
     }
 
@@ -81,6 +81,8 @@ public class Calificacion {
     public void setComentario(String comentario) {
         this.comentario = comentario;
     }
+
+    
 
 }
 

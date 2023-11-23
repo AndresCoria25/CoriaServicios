@@ -41,7 +41,8 @@ public class ConfiguracionSeguridad extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/index.css", "/login", "/login.css", "/registrar", "/registrarP", "/registro", "/registroP", "/registro.css", "/registroP.css").permitAll()
+                // .antMatchers("/", "/index.css", "/login", "/login.css", "/registrar", "/registrarP", "/registro", "/registroP", "/registro.css", "/registroP.css").permitAll()
+                .antMatchers("/", "/index.css", "/login", "/login.css", "/registrar", "/registrarP", "/registro", "/registroP", "/registro.css", "/registroP.css", "/contacto", "/contacto.css", "/informacion", "/informacion.css", "/calificacion", "/calificacion.css").permitAll()
                 .antMatchers("/css/**").permitAll() // If needed for other CSS files
                 .antMatchers("/resources/**", "/static/**", "/js/**", "/imagenes/**").permitAll()
                 .antMatchers("/admin/*").hasRole("ADMIN")

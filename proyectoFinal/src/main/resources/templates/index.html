@@ -24,7 +24,7 @@
     <body>
 
       <!-- FRAGMENTS DEL NAVBAR -->
-        <nav th:replace="/fragments/navbar2 :: nav"></nav>
+        <nav th:replace="/fragments/navbarVisitante :: nav"></nav>
 
 
 
@@ -59,7 +59,7 @@
         <div th:if="${mensaje}" class="alert alert-success text-center">
             <p th:text="${mensaje}" class="text-large">Mensaje de éxito personalizado</p>
         </div>
-        <br><br><br><br>
+        <br><br>
         <!-- FRAGMENTS DEL FOOTER -->
         <div th:replace="/fragments/footer :: div"></div>
 

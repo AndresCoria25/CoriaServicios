@@ -92,7 +92,7 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
     @Transactional
-    public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono,String currentPassword) throws MiException {
+    public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono, String currentPassword) throws MiException {
         if (nombre.isEmpty() || nombre == null) {
             throw new MiException("el nombre no puede ser nulo o estar vacio");
         }
@@ -118,6 +118,40 @@ public class UsuarioServicio implements UserDetailsService {
             usuario.setApellido(apellido);
             usuario.setEmail(email);
             usuario.setTelefono(telefono);
+
+            usuarioRepositorio.save(usuario);
+            return usuario; // Returns the modified user
+        } else {
+            throw new MiException("Usuario no encontrado");
+        }
+    }
+
+    @Transactional
+    public Usuario AdministradorModifica(String id, String nombre, String apellido, String email, String telefono, Rol nuevoRol) throws MiException {
+        if (nombre == null || nombre.isEmpty()) {
+            throw new MiException("el nombre no puede ser nulo o estar vacío");
+        }
+        if (apellido.isEmpty() || apellido == null) {
+            throw new MiException("el apellido no puede ser nulo o estar vacio");
+        }
+        if (email.isEmpty() || email == null) {
+            throw new MiException("el email no puede ser nulo o estar vacio");
+        }
+        if (telefono.isEmpty()) {
+            throw new MiException("el telefono no puede estar vacio");
+        }
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+
+            // Update user information
+            usuario.setNombre(nombre);
+            usuario.setApellido(apellido);
+            usuario.setEmail(email);
+            usuario.setTelefono(telefono);
+
+            // Modificar el rol
+            usuario.setRol(nuevoRol);
 
             usuarioRepositorio.save(usuario);
             return usuario; // Returns the modified user
