@@ -5,16 +5,19 @@
  */
 package Coria.controladores;
 
+import Coria.entidades.Proveedor;
 import Coria.entidades.Usuario;
 import Coria.enumeraciones.Rol;
 import Coria.excepciones.MiException;
-import Coria.excepciones.MiException;
+import Coria.servicios.ProveedorServicio;
 import Coria.servicios.UsuarioServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.http.ContentDisposition.formData;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +37,8 @@ public class UsuarioControlador {
 
     @Autowired
     private UsuarioServicio usuarioServicio;
+    @Autowired
+    private ProveedorServicio provServ;
 
     @GetMapping("/")//localhost:8080
     public String index(ModelMap modelo, HttpSession session) {
@@ -43,6 +48,36 @@ public class UsuarioControlador {
         }
         return "index.html";
 
+    }
+
+    @GetMapping("/registrarP")
+    public String registrarProveedor(Model model) {
+        model.addAttribute("proveedor", new Proveedor());
+        model.addAttribute("rol", Rol.USER); // Puedes establecer el rol predeterminado según tus necesidades
+        model.addAttribute("nombreEmpresa", ""); // O el valor por defecto
+        model.addAttribute("tipoServicio", "Gasista"); // O el valor por defecto
+        return "registroP";
+    }
+
+    @PostMapping("/registroP")
+    public String registro(@RequestParam String nombre,
+            @RequestParam String apellido,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String telefono,
+            @RequestParam Rol rol,
+            @RequestParam(required = false) String tipoServicio,
+            @RequestParam(required = false) String nombreEmpresa,
+            @RequestParam(required = false) MultipartFile archivo,
+            RedirectAttributes redirectAttributes) throws MiException {
+        try {
+            usuarioServicio.registrar(nombre, archivo, apellido, email, telefono, password, nombreEmpresa, tipoServicio, rol);;
+            redirectAttributes.addFlashAttribute("mensaje", "Registo completado con Exito");
+            return "redirect:/";
+        } catch (MiException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/";
+        }
     }
 
     //CORRESPONDE AL ADMIN
@@ -74,24 +109,40 @@ public class UsuarioControlador {
     }
 
     @PostMapping("/modificar/{id}")
-    public String modificar(
-            @PathVariable String id,
+    public String modificar(@PathVariable String id,
             @RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String email,
             @RequestParam String telefono,
+            @RequestParam(required = false) String tipoServicio,
+            @RequestParam(required = false) String nombreEmpresa,
+            @RequestParam (required = false)Rol rol,
             @RequestParam String currentPassword,
-            RedirectAttributes redirectAttributes
-    ) throws MiException {
+            @RequestParam(required = false) MultipartFile imagen,
+            RedirectAttributes redirectAttributes) throws MiException {
         try {
-
-            usuarioServicio.modificarUsuario(id, nombre, apellido, email, telefono, currentPassword);
+            usuarioServicio.modificarUsuario(id, nombre, apellido, email, telefono, currentPassword, tipoServicio, nombreEmpresa, rol, imagen);
             redirectAttributes.addFlashAttribute("mensaje", "Usuario modificado Correctamente");
-            return "redirect:../perfil/{id}";
+            return "redirect:/perfil/{id}";
         } catch (MiException ex) {
             System.out.println(ex.getMessage());
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
-            return "redirect:../perfil/{id}";
+            return "redirect:/perfil/{id}";
+        }
+    }
+
+    @PostMapping("/modificarFotoPerfil/{id}")
+    public String modificarFotoPerfil(@PathVariable String id,
+            @RequestParam("imagen") MultipartFile imagen,
+            RedirectAttributes redirectAttributes) throws MiException {
+        try {
+            usuarioServicio.modificarFotoPerfil(id, imagen);
+            redirectAttributes.addFlashAttribute("mensaje", "Foto de perfil modificada correctamente");
+            return "redirect:/perfil/{id}";
+        } catch (MiException ex) {
+            System.out.println(ex.getMessage());
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/perfil/{id}";
         }
     }
 
@@ -160,19 +211,6 @@ public class UsuarioControlador {
         return "registro.html";
     }
 
-    @PostMapping("/registro")
-    public String registro(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String email,
-            @RequestParam String password, String password2, @RequestParam String telefono, MultipartFile archivo, RedirectAttributes redirectAttributes) throws MiException {
-        try {
-            usuarioServicio.registrar(archivo, nombre, apellido, email, telefono, password);
-            redirectAttributes.addFlashAttribute("mensaje", "Registro Exitoso. Ahora puedes Iniciar Sesión.");
-            return "redirect:/";
-        } catch (MiException ex) {
-            redirectAttributes.addFlashAttribute("error", ex.getMessage());
-            return "redirect:/";
-        }
-    }
-
     @GetMapping("/login")//localhost:8080/login
     public String login(@RequestParam(required = false) String error, ModelMap modelo) {
         if (error != null) {
@@ -215,6 +253,27 @@ public class UsuarioControlador {
         Usuario usuario = usuarioServicio.getOne(id);
         modelo.addAttribute("usuario", usuario);
         return "perfil_usuario1.html";
+    }
+
+    @GetMapping("/cambiarRol/{id}")
+    public String mostrarFormularioCambiarRol(@PathVariable String id, ModelMap modelo) {
+        Usuario usuario = usuarioServicio.getOne(id);
+        modelo.addAttribute("usuario", usuario);
+        modelo.addAttribute("roles", Rol.values()); // Asumiendo que Rol es un enum con los posibles roles
+
+        return "rol.html";
+    }
+
+    @PostMapping("/modificarRol/{id}")
+    public String modificarRolYTipoServicio(@PathVariable String id,
+            @RequestParam String nuevoRol,
+            @RequestParam String tipoServicio,
+            @RequestParam String nombreEmpresa,
+            RedirectAttributes redirectAttributes) throws MiException {
+
+        usuarioServicio.modificarRolYTipoServicio(id, nuevoRol, tipoServicio, nombreEmpresa);
+        redirectAttributes.addFlashAttribute("mensaje", "Rol cambiado exitosamente");
+        return "redirect:/cambiarRol/{id}";
     }
 
     @PostMapping("/perfil1/{id}")
@@ -262,9 +321,8 @@ public class UsuarioControlador {
             return "redirect:/adminModifica/{id}";
         }
     }
-    
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
     @GetMapping("/informacion") // Ruta modificada para evitar ambigüedad
     public String obtenerInformacion(ModelMap modelo, HttpSession session) {
         // Lógica para obtener información del usuario
@@ -354,6 +412,18 @@ public class UsuarioControlador {
             // Manejar errores y redirigir a la página de contacto en caso de error
             redirectAttributes.addFlashAttribute("error", "Hubo un error al procesar tu mensaje. Por favor, inténtalo de nuevo.");
             return "redirect:/contacto";
+        }
+    }
+
+    @PostMapping("/darDeBaja")
+    public String darDeBaja(@RequestParam String motivo, @RequestParam String id) {
+        // Lógica para dar de baja aquí
+        try {
+            usuarioServicio.darDeBaja(id, motivo);
+            return "redirect:/login?bajaExitosa=true";
+        } catch (MiException e) {
+            // Manejo de excepciones si es necesario
+            return "redirect:/perfil_usuario?error=true";
         }
     }
 }

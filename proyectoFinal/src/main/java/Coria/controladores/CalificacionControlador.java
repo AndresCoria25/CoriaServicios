@@ -1,11 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Coria.controladores;
 
+import Coria.entidades.Calificacion;
+import Coria.entidades.OrdenTrabajo;
 import Coria.entidades.Usuario;
+import Coria.repositorios.CalificacionRepositorio;
 import Coria.servicios.CalificacionServicio;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -99,5 +99,16 @@ public class CalificacionControlador {
             return "error";
         }
 
+    }
+    @Autowired
+    private CalificacionRepositorio calificacionRepository;
+
+    @PostMapping("/calificar/{ordenId}")
+    public String calificarServicio(@PathVariable Long ordenId, @ModelAttribute Calificacion calificacion) {
+        // Guardar la calificación asociada a la orden de trabajo
+        calificacion.setOrdenTrabajo(new OrdenTrabajo(ordenId));
+        calificacionRepository.save(calificacion);
+
+        return "redirect:/ordenTrabajo/{ordenId}";
     }
 }

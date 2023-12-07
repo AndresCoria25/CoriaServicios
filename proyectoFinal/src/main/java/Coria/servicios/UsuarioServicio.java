@@ -1,11 +1,15 @@
 package Coria.servicios;
 
 import Coria.entidades.Imagen;
+import Coria.entidades.Proveedor;
 import Coria.entidades.Usuario;
 import Coria.enumeraciones.Rol;
 import Coria.excepciones.MiException;
 import Coria.excepciones.MiException;
+import Coria.repositorios.ProveedorRepositorio;
 import Coria.repositorios.UsuarioRepositorio;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,29 +36,52 @@ public class UsuarioServicio implements UserDetailsService {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
+     @Autowired
+    private ProveedorRepositorio proveedorRepositorio;
+
     @Autowired
     private ImagenServicio imagenServicio;
+    @Autowired
+    private ProveedorRepositorio provRep;
 
     @Transactional
-    public void registrar(MultipartFile archivo, String nombre, String apellido, String email, String telefono, String password) throws MiException {
+    public void registrar(String nombre, MultipartFile archivo, String apellido, String email, String telefono, String password, String nombreEmpresa, String tipoServicio, Rol rol) throws MiException {
 
-        validar(nombre, apellido, email, telefono, password);
+        if (nombre.isEmpty() || nombre == null) {
+            throw new MiException("el nombre no puede ser nulo o estar vacío");
+        }
+        if (apellido.isEmpty() || apellido == null) {
+            throw new MiException("el apellido no puede ser nulo o estar vacío");
+        }
 
-        Usuario usuarioExistente = usuarioRepositorio.buscarPorEmail(email);
+        if (email.isEmpty() || email == null) {
+            throw new MiException("el email no puede ser nulo o estar vacio");
+        }
+
+        if (telefono.isEmpty()) {
+            throw new MiException("el telefono no puede estar vacio");
+        }
+        if (password.isEmpty() || password == null || password.length() <= 5) {
+            throw new MiException("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
+        }
+        Proveedor usuarioExistente = provRep.buscarPorEmail(email);
         if (usuarioExistente != null) {
             throw new MiException("El correo electrónico ya está en uso.");
         }
 
-        Usuario usuario = new Usuario();
-        usuario.setNombre(nombre);
-        usuario.setApellido(apellido);
-        usuario.setEmail(email);
-        usuario.setTelefono(telefono);
-        usuario.setPassword(new BCryptPasswordEncoder().encode(password));
-        usuario.setRol(Rol.USER);
+        Proveedor prov = new Proveedor();
+        prov.setNombre(nombre);
+        prov.setApellido(apellido);
+        prov.setEmail(email);
+        prov.setTelefono(telefono);
+        prov.setPassword(new BCryptPasswordEncoder().encode(password));
+        prov.setRol(rol); // Usar el rol proporcionado
         Imagen imagen = imagenServicio.guardar(archivo);
-        usuario.setImagen(imagen);
-        usuarioRepositorio.save(usuario);
+        prov.setImagen(imagen);
+        prov.setTipoServicio(tipoServicio != null ? tipoServicio : "");
+        prov.setNombreEmpresa(nombreEmpresa != null ? nombreEmpresa : "");
+
+        provRep.save(prov);
     }
 
     @Transactional
@@ -90,9 +118,15 @@ public class UsuarioServicio implements UserDetailsService {
             throw new MiException("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
         }
     }
+      public Usuario obtenerInformacionUsuario(String id) {
+        // Utiliza el método findById de tu repositorio para obtener un Optional<Usuario> por ID
+        return usuarioRepositorio.findById(id).orElse(null);
+    }
+
 
     @Transactional
-    public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono, String currentPassword) throws MiException {
+    public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono, String currentPassword,
+            String tipoServicio,String nombreEmpresa,Rol rol,MultipartFile archivo) throws MiException {
         if (nombre.isEmpty() || nombre == null) {
             throw new MiException("el nombre no puede ser nulo o estar vacio");
         }
@@ -105,9 +139,9 @@ public class UsuarioServicio implements UserDetailsService {
         if (telefono.isEmpty()) {
             throw new MiException("el telefono no puede estar vacio");
         }
-        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+        Optional<Proveedor> respuesta = proveedorRepositorio.findById(id);
         if (respuesta.isPresent()) {
-            Usuario usuario = respuesta.get();
+            Proveedor usuario = respuesta.get();
 
             // Verificar si la contraseña actual ingresada es correcta
             if (!new BCryptPasswordEncoder().matches(currentPassword, usuario.getPassword())) {
@@ -118,9 +152,49 @@ public class UsuarioServicio implements UserDetailsService {
             usuario.setApellido(apellido);
             usuario.setEmail(email);
             usuario.setTelefono(telefono);
+            usuario.setRol(rol);
+            usuario.setTipoServicio(tipoServicio);
+            usuario.setNombreEmpresa(nombreEmpresa);
+
+            String idImagen = null;
+
+            if (usuario.getImagen() != null) {
+                idImagen = usuario.getImagen().getId();
+            }
+            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
+            usuario.setImagen(imagen);
 
             usuarioRepositorio.save(usuario);
             return usuario; // Returns the modified user
+        } else {
+            throw new MiException("Usuario no encontrado");
+        }
+    }
+
+    @Transactional
+    public void modificarRolYTipoServicio(String id, String nuevoRol, String tipoServicio, String nombreEmpresa) throws MiException {
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+
+            // Validar que el nuevo rol sea válido según tus reglas de negocio
+            // Puedes agregar más validaciones según sea necesario...
+            usuario.setRol(Rol.valueOf(nuevoRol));
+
+            if (usuario instanceof Proveedor) {
+                // Si el usuario es un Proveedor, establecer el tipo de servicio
+                ((Proveedor) usuario).setTipoServicio(tipoServicio);
+                ((Proveedor) usuario).setNombreEmpresa(nombreEmpresa);
+            } else {
+                // Si no es un Proveedor, reiniciar el tipo de servicio
+                if (usuario.getRol() != Rol.PROVEEDOR) {
+                    ((Proveedor) usuario).setTipoServicio(null);
+                    ((Proveedor) usuario).setNombreEmpresa(null);
+                }
+            }
+
+            usuarioRepositorio.save(usuario);
         } else {
             throw new MiException("Usuario no encontrado");
         }
@@ -195,7 +269,7 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
     @Transactional
-    public void cambiarRol(String id) {
+    public void cambiarRol(String id, Rol nuevoRol) {
         Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
 
         if (respuesta.isPresent()) {
@@ -207,6 +281,9 @@ public class UsuarioServicio implements UserDetailsService {
             } else if (usuario.getRol().equals(Rol.PROVEEDOR)) {
                 usuario.setRol(Rol.USER);
             }
+
+            // Guardar los cambios en el repositorio
+            usuarioRepositorio.save(usuario);
         }
     }
 
@@ -216,7 +293,7 @@ public class UsuarioServicio implements UserDetailsService {
 
         if (admin.getRol().equals(Rol.ADMIN)) {
 
-            admin.setFechaBaja(new Date());
+            admin.setFechaBaja(LocalDate.MAX);
 
             admin.setMotivoBaja(motivo);
 
@@ -237,6 +314,45 @@ public class UsuarioServicio implements UserDetailsService {
                 usuarioRepositorio.delete(usuario);
             }
         }
+    }
+
+   @Transactional
+public void darDeBaja(String id, String motivo) throws MiException {
+    Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+
+    if (respuesta.isPresent()) {
+        Usuario usuario = respuesta.get();
+
+        // Ensure that usuarioRepositorio is not null
+        if (usuarioRepositorio != null) {
+            // Verificar si el usuario es un administrador
+            if (usuario.getRol() != null && usuario.getRol().equals(Rol.ADMIN)) {
+                // Si es administrador, registrar la fecha de baja en lugar de eliminarlo
+                usuario.setFechaBaja(LocalDate.now());
+                usuario.setBaja(true);
+                usuario.setMotivoBaja(motivo);
+            } else {
+                // Si no es administrador, dar de baja al usuario sin eliminar físicamente
+                usuario.setBaja(true);
+                usuario.setFechaBaja(LocalDate.now());
+                usuario.setMotivoBaja(motivo);
+                usuarioRepositorio.save(usuario); // Actualizar en lugar de eliminar
+            }
+        } else {
+            throw new MiException("UsuarioRepositorio no inicializado");
+        }
+    } else {
+        throw new MiException("Usuario no encontrado");
+    }
+}
+    public List<Usuario> listaUsuarios() {
+        List<Usuario> usuarios = new ArrayList<>();
+        for (Usuario usuario : usuarioRepositorio.findAll()) {
+            if (usuario.getFechaBaja() != null) {
+                usuarios.add(usuario);
+            }
+        }
+        return usuarios;
     }
 
     private void validar(String nombre, String apellido, String email, String telefono, String password) throws MiException {
@@ -281,5 +397,28 @@ public class UsuarioServicio implements UserDetailsService {
         }
 
     }
-
+  @Transactional
+public void modificarFotoPerfil(String id, MultipartFile imagen) throws MiException {
+    Optional<Proveedor> respuesta = proveedorRepositorio.findById(id); // Manejar la excepción, puedes lanzar una nueva excepción personalizada si es necesario.
+    if (respuesta.isPresent()) {
+        Proveedor usuario = respuesta.get();
+        
+        // Puedes agregar lógica para validar y procesar la imagen antes de guardarla.
+        // Asegúrate de validar que la imagen no sea nula y tiene contenido.
+        
+        String idImagen = null;
+        
+        if (usuario.getImagen() != null) {
+            idImagen = usuario.getImagen().getId();
+        }
+        
+        Imagen nuevaImagen = imagenServicio.actualizar(imagen, idImagen);
+        usuario.setImagen(nuevaImagen);
+        
+        proveedorRepositorio.save(usuario);
+    } else {
+        throw new MiException("Usuario no encontrado");
+    }
 }
+}
+

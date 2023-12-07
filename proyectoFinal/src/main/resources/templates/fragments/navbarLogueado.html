@@ -11,21 +11,50 @@
                 <li class="nav-item">
                     <a class="nav-item nav-link active" th:href="@{/contacto}">Contacto</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-item nav-link active" th:href="@{/calificacion}">Calificaciones</a>
-                </li>
+               
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Perfil Usuario
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" th:href="@{'/perfil/' + ${session.usuariosession.id}}">Cambiar Nombre, etc.</a>
+                        <a class="dropdown-item" th:href="@{'/perfil/' + ${session.usuariosession.id}}">Editar Perfil</a>
                         <a class="dropdown-item" th:href="@{'/perfil1/' + ${session.usuariosession.id}}">Cambiar contraseña</a>
+                        <a class="dropdown-item" th:href="@{'/cambiarRol/' + ${session.usuariosession.id}}">Cambiar Rol</a>
                     </div>
                 </li>
                 <li class="nav-item" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                     <a class="nav-link active" th:href="@{/lista}">Lista de Usuarios</a>
                 </li>
+
+                <li class="nav-item dropdown" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a class="nav-item nav-link active" th:href="@{/trabajo/listaTrabajo/{userId}(userId=${session.usuariosession.id})}">
+                        Trabajos
+                    </a>
+                </li>
+                <li class="nav-item dropdown" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a class="nav-item nav-link active" th:href="@{/trabajo/listaTrabajoUsuario/{userId}(userId=${session.usuariosession.id})}">
+                        Trabajos
+                    </a>
+                </li>
+                <li class="nav-item dropdown" th:if="${#authorization.expression('hasRole(''ROLE_PROVEEDOR'')')}">
+                    <a class="nav-item nav-link active" th:href="@{/trabajo/listaTrabajoProveedor/{userId}(userId=${session.usuariosession.id})}">
+                        Trabajos
+                    </a>
+                </li>
+
+
+
+
+
+               <!-- <li class="nav-item dropdown" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Oficios
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:href="@{'/listaOficios/'}">Listar</a>
+                        <a class="dropdown-item" th:href="@{'/crearOficio/'}">Crear</a>
+                    </div>
+                </li> -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Proveedores
@@ -41,10 +70,12 @@
 
 
 
-                <form class="d-flex ml-auto">
-                    <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Buscar</button>
-                </form>
+                <li class="nav-item">
+                    <form class="d-flex" th:action="@{/resultados}" method="get">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Search" name="terminoBusqueda">
+                        <button class="btn btn-outline-success" type="submit">Buscar</button>
+                    </form>
+                </li>
             </ul>
         </div>
     </div>
