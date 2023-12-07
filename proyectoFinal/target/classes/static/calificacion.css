@@ -1,0 +1,225 @@
+body {
+    background: #FDC830;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #F37335, #FDC830);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #F37335, #FDC830); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+/* Estilo para las estrellas */
+.rating {
+    font-size: 260%; /* Ajusta el tamaño al 20% del tamaño original */
+}
+
+.rating input {
+    display:inline-block ; /* Oculta los radio buttons */
+}
+
+.rating label {
+    cursor: pointer;
+    color: goldenrod; /* Color de estrella no seleccionada */
+    font-size: 8em; /* Tamaño de la estrella no seleccionada */
+}
+
+.rating input:checked ~ label {
+    color: gold; /* Cambia el color de las estrellas seleccionadas a dorado */
+}
+
+.star.selected {
+    color: gold;
+}
+footer {
+    background-color: #000000;
+    opacity: 0.8;
+    color: #fff;
+    padding: 15px 0;
+    text-align: center;
+}
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.image-container figure {
+    text-align: center;
+    margin: 10px;
+}
+
+.image-container img {
+    max-width: 100%;
+    border: 2px solid transparent;
+    transition: border 0.3s;
+    margin: 10px; /* Agrega un espacio entre las imágenes y el borde */
+    padding: 30px; /* Agrega espacio dentro del borde */
+}
+
+.image-container a {
+    text-decoration: none;
+}
+
+.image-container figcaption {
+    font-size: 14px;
+    margin-top: 5px;
+}
+.image-container img:hover {
+    border: 1px solid #000; /* Cambia el color del borde al pasar el mouse sobre la imagen */
+}
+
+
+
+@media (max-width: 991.98px) {
+    .navbar-dark .navbar-nav .nav-link  {
+        padding: 10px 15px;
+    }
+}
+
+.carousel-caption {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .3);
+    z-index: 1;
+}
+
+.team img {
+    position: relative;
+    z-index: 1;
+}
+
+.team .team-text {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    bottom: 0px;
+    left: 0;
+    transition: .5s;
+}
+
+.team:hover .team-text {
+    bottom: 100px;
+}
+
+.team .team-social {
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    bottom: -100px;
+    left: 0;
+    transition: .5s;
+}
+
+.team:hover .team-social {
+    bottom: 0;
+}
+
+.testimonial-carousel .owl-dots {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.testimonial-carousel .owl-dot {
+    display: inline-block;
+    margin: 0 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+    background: #dddddd;
+}
+
+.testimonial-carousel .owl-dot.active {
+    background: primary;
+}
+
+.contact-form .help-block ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.testimonial-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.testimonial-item:hover {
+    transform: scale(1.1);
+}
+
+.testimonial-item img {
+    transition: all 0.3s ease;
+}
+
+.testimonial-item:hover img {
+    transform: scale(1.2);
+}
+.testimonial-content {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    margin-bottom: 20px;
+}
+
+.testimonial-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+
+.testimonial-carousel {
+    display: flex;
+    overflow: hidden;
+}
+
+.testimonial-item {
+    min-width: 100%; /* Ancho del carrusel visible */
+    transition: transform 1s ease; /* Transición suave */
+}
+
+.testimonial-rating .star.highlight {
+    color: gold;
+    transform: scale(1.2);
+}
+
+
+
+.form-group {
+    position: relative;
+}
+
+.custom-select {
+    display: inline-block;
+    position: relative;
+}
+
+.custom-select select {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+.custom-select:after {
+    content: '\25BC'; /* Unicode para la flecha hacia abajo */
+    font-size: 25px;
+    color: #555;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.arrow {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 18px;
+}
