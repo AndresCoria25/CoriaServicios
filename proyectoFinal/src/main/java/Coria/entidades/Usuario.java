@@ -1,7 +1,8 @@
 package Coria.entidades;
 
 import Coria.enumeraciones.Rol;
-import java.util.Date;
+import java.time.LocalDate;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -9,8 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -25,16 +24,22 @@ public class Usuario {
     private String apellido;
     private String password;
     private String email;
-    private int telefono;
-    @Temporal(TemporalType.DATE)
-    private Date fechaBaja;
+    private String telefono;
+    @Column(name = "fecha_baja")
+    private LocalDate fechaBaja;
+
     private String motivoBaja;
+    private boolean baja;
 
     @Enumerated(EnumType.STRING)
     private Rol rol;
-
+   
     @OneToOne
     private Imagen imagen;
+
+    public Usuario() {
+
+    }
 
     public Imagen getImagen() {
         return imagen;
@@ -42,9 +47,6 @@ public class Usuario {
 
     public void setImagen(Imagen imagen) {
         this.imagen = imagen;
-    }
-
-    public Usuario() {
     }
 
     public String getId() {
@@ -87,15 +89,15 @@ public class Usuario {
         this.email = email;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-    
-        public Rol getRol() {
+
+    public Rol getRol() {
         return rol;
     }
 
@@ -103,12 +105,20 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public Date getFechaBaja() {
+    public LocalDate getFechaBaja() {
         return fechaBaja;
     }
 
-    public void setFechaBaja(Date fechaBaja) {
+    public void setFechaBaja(LocalDate fechaBaja) {
         this.fechaBaja = fechaBaja;
+    }
+
+    public boolean isBaja() {
+        return baja;
+    }
+
+    public void setBaja(boolean baja) {
+        this.baja = baja;
     }
 
     public String getMotivoBaja() {
@@ -119,5 +129,4 @@ public class Usuario {
         this.motivoBaja = motivoBaja;
     }
 
- 
 }

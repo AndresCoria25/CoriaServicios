@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <title>Inicia Sesion</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+        <link th:replace="/fragments/Boostrap-Icono :: link"></link>
+
+        <!-- Tus estilos personalizados u hojas de estilo adicionales -->
+        <link href="/informacion.css" rel="stylesheet" type="text/css" />
+
+        <style>
+            /* ... (damos estilo a las imagenes con movimiento) ... */
+            .image-container figure {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .image-container img {
+                width: 100%;
+                height: auto;
+                transition: transform 0.5s ease-out;
+            }
+
+            .image-container figure:hover img {
+                transform: scale(1.15);
+            }
+
+            .image-container figcaption {
+                position: absolute;
+                top: 102%;
+                left: 50%;
+                transform: translate(-50%, -110%); /* Adjust the second value to move the caption up or down */
+                opacity: 1;
+                transition: opacity 0.3s ease-out;
+            }
+
+            .image-container figure:hover figcaption {
+                opacity: 0.5;  /* Cambia la opacidad al pasar el mouse sobre la imagen */
+            }
+            /* ... (aqui termina el estilo de las imagenes con movimiento) ... */
+        </style>
+    </head>
+
+    <body>
+        <!-- FRAGMENTS DEL NAVBAR -->
+        <nav th:replace="/fragments/navbarLogueado :: nav"></nav>
+
+        <div class="container">
+            <h2>Resultados de Búsqueda</h2>
+
+            <div th:if="${resultados.isEmpty()}">
+                <p>No se encontraron resultados.</p>
+            </div>
+
+            <div th:if="${not resultados.isEmpty()}">
+                <table class="table">
+                    <thead>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Usuario</th>
+                        <th>Empresa</th>
+                        <th>Calificacion promedio</th>
+                        <th>N° de calificaciones</th>
+                        <th>Oficio</th>
+                        <!-- Puedes agregar más encabezados según las propiedades de tu entidad ResultadoBusquedaDTO -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="resultado : ${resultados}">
+                        
+                        <td th:text="${resultado.nombre}"></td>
+                        <td th:text="${resultado.apellido}"></td>
+                        <td th:text="${resultado.email}"></td>
+                        <td th:text="${resultado.telefono}"></td>
+                        <td th:text="${resultado.tipoEntidad}"></td>
+                        <td th:text="${resultado.nombreEmpresa}"></td>
+                        <td th:text="${resultado.calificacionPromedio}"></td>
+                        <td th:text="${resultado.numeroCalificaciones}"></td>
+                        <td th:text="${resultado.nombreOficio}"></td>
+                            <!-- Puedes agregar más celdas según las propiedades de tu entidad ResultadoBusquedaDTO -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+        <br>  <br>
+        <br>  <br>
+        <br>
+
+        <!-- FRAGMENTS DEL FOOTER -->
+        <div th:replace="/fragments/footer :: div"></div>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Otras dependencias y estilos -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Otros scripts -->
+    </body>
+
+</html>
