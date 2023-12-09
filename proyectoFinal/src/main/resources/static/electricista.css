@@ -41,3 +41,11 @@ footer {
 .image-container img:hover {
     border: 1px solid #000; /* Cambia el color del borde al pasar el mouse sobre la imagen */
 }
+@font-face {
+    font-family: sundays;
+    src: url('Sunday.ttf') format('truetype');
+}
+
+.Sunday {
+    font-family: sundays;
+}

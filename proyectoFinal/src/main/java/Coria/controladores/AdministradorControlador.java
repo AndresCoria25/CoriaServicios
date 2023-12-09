@@ -29,12 +29,7 @@ public class AdministradorControlador {
 //        return "usuario_list.html";
 //    }
 
-        @GetMapping("/modificarRol/{id}")
-        public String cambiarRol(@PathVariable String id) {
-            usuarioServicio.cambiarRol(id);
-
-            return "redirect:/admin/usuarios";
-        }
+       
     }
 
 }

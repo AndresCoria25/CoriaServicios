@@ -4,10 +4,12 @@
  */
 package Coria.entidades;
 
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -20,49 +22,79 @@ public class Trabajo {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idTrabajo;
-    private String idUsuario;
-    private String idProveedor;
+    protected String id;
+
+    private String usuarioId;
+    private String proveedorId;
+    private String descripcion;
     private String estado;
-    private String tipo;
-    private Integer duracion;
-    private Double presupuesto;
+    private String nombre;
+    private String apellido;
+    private String telefono;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaCreacion;
+
+    private Integer calificacion;
+    private String comentario;
 
     public Trabajo() {
     }
-
-    public Trabajo(String idTrabajo, String idUsuario, String idProveedor, String estado, String tipo, Integer duracion, Double presupuesto) {
-        this.idTrabajo = idTrabajo;
-        this.idUsuario = idUsuario;
-        this.idProveedor = idProveedor;
-        this.estado = estado;
-        this.tipo = tipo;
-        this.duracion = duracion;
-        this.presupuesto = presupuesto;
+       public String getNombre() {
+        return nombre;
     }
 
-    public String getIdTrabajo() {
-        return idTrabajo;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setIdTrabajo(String idTrabajo) {
-        this.idTrabajo = idTrabajo;
+    public String getApellido() {
+        return apellido;
     }
 
-    public String getIdUsuario() {
-        return idUsuario;
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
-    public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
+   
+    public String getTelefono() {
+        return telefono;
     }
 
-    public String getIdProveedor() {
-        return idProveedor;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
-    public void setIdProveedor(String idProveedor) {
-        this.idProveedor = idProveedor;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public String getProveedorId() {
+        return proveedorId;
+    }
+
+    public void setProveedorId(String proveedorId) {
+        this.proveedorId = proveedorId;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public String getEstado() {
@@ -73,28 +105,28 @@ public class Trabajo {
         this.estado = estado;
     }
 
-    public String getTipo() {
-        return tipo;
+    public Date getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
-    public Integer getDuracion() {
-        return duracion;
+    public Integer getCalificacion() {
+        return calificacion;
     }
 
-    public void setDuracion(Integer duracion) {
-        this.duracion = duracion;
+    public void setCalificacion(Integer calificacion) {
+        this.calificacion = calificacion;
     }
 
-    public Double getPresupuesto() {
-        return presupuesto;
+    public String getComentario() {
+        return comentario;
     }
 
-    public void setPresupuesto(Double presupuesto) {
-        this.presupuesto = presupuesto;
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
 
 }

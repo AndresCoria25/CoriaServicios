@@ -2,6 +2,7 @@ package Coria.controladores;
 
 
 import Coria.entidades.Usuario;
+import Coria.enumeraciones.Rol;
 import Coria.excepciones.MiException;
 
 import Coria.servicios.UsuarioServicio;
@@ -41,7 +42,7 @@ public class PortalControlador {
             @RequestParam String password, String password2, @RequestParam String telefono, ModelMap modelo, MultipartFile archivo) {
 
         try {
-            usuarioServicio.registrar(archivo, nombre, apellido, email, telefono, password);
+            usuarioServicio.registrar(nombre, archivo, apellido, email, telefono, password, nombre, apellido, Rol.USER);
             modelo.put("exito", "Usuario registrado correctamente!");
 
             return "index.html";

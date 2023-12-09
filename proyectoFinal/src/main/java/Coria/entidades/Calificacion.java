@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,6 +31,16 @@ public class Calificacion {
     @Temporal(TemporalType.DATE)
     private Date fechaBaja;
     private String comentario;
+
+    public OrdenTrabajo getOrdenTrabajo() {
+        return ordenTrabajo;
+    }
+
+    public void setOrdenTrabajo(OrdenTrabajo ordenTrabajo) {
+        this.ordenTrabajo = ordenTrabajo;
+    }
+    @ManyToOne
+    private OrdenTrabajo ordenTrabajo;
 
     public Calificacion() {
     }
@@ -82,7 +93,4 @@ public class Calificacion {
         this.comentario = comentario;
     }
 
-    
-
 }
-

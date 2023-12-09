@@ -11,16 +11,13 @@ public class Proveedor extends Usuario {
 
     private String nombreEmpresa;
     private String tipoServicio;
-    private String calificacion;
+    private Double calificacionPromedio;  // Cambiado a double
+    private Integer numeroCalificaciones;      // Nuevo campo para contar las calificaciones
 
     public Proveedor() {
     }
 
-    public Proveedor(String nombreEmpresa, String tipoServicio, String calificacion) {
-        this.nombreEmpresa = nombreEmpresa;
-        this.tipoServicio = tipoServicio;
-        this.calificacion = calificacion;
-    }
+  
 
     public String getNombreEmpresa() {
         return nombreEmpresa;
@@ -38,11 +35,24 @@ public class Proveedor extends Usuario {
         this.tipoServicio = tipoServicio;
     }
 
-    public String getCalificacion() {
-        return calificacion;
+    public Double getCalificacionPromedio() {
+        return calificacionPromedio;
     }
 
-    public void setCalificacion(String calificacion) {
-        this.calificacion = calificacion;
+    public void setCalificacionPromedio(Double calificacionPromedio) {
+        this.calificacionPromedio = calificacionPromedio;
     }
+
+    public Integer getNumeroCalificaciones() {
+        return numeroCalificaciones;
+    }
+
+    public void setNumeroCalificaciones(Integer numeroCalificaciones) {
+        this.numeroCalificaciones = numeroCalificaciones;
+    }
+
+    
+
+
+    
 }

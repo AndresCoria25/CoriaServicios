@@ -5,6 +5,7 @@
 package Coria.repositorios;
 
 import Coria.entidades.Proveedor;
+import Coria.entidades.Trabajo;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,11 @@ public interface ProveedorRepositorio extends JpaRepository<Proveedor, String> {
     @Query("SELECT p FROM Proveedor p WHERE p.email = :email")
     Proveedor buscarPorEmail(@Param("email") String email);
 
+    @Query("SELECT p FROM Proveedor p WHERE LOWER(p.nombreEmpresa) LIKE LOWER(CONCAT('%', :terminoBusqueda , '%')) OR LOWER(p.tipoServicio) LIKE LOWER(CONCAT('%', :terminoBusqueda , '%'))")
+    List<Proveedor> findByNombreEmpresaContainingOrTipoServicioContaining(@Param("terminoBusqueda") String terminoBusqueda);
+
+      List<Proveedor> findAllByOrderByCalificacionPromedioDesc();
+      
     Proveedor findByNombreEmpresa(String nombreEmpresa);
 
     void deleteByNombreEmpresa(String nombreEmpresa);

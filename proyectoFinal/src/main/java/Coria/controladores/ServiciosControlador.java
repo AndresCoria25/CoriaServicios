@@ -49,4 +49,12 @@ public class ServiciosControlador {
         model.addAttribute("plomeros", plomeros);
         return "plomero";
     }
+    //////////////////////
+     @GetMapping("/usuario")
+    public String mostrarUsuarios(Model model) {
+        List<Proveedor> plomeros = provServ.obtenerProveedoresPorTipo("Plomero");
+        model.addAttribute("plomeros", plomeros);
+        return "perfil";
+    }
+    
 }
