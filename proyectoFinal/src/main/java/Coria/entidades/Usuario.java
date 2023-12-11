@@ -25,9 +25,7 @@ public class Usuario {
     private String password;
     private String email;
     private String telefono;
-    /////
     private String resetToken;
-    /////
     @Column(name = "fecha_baja")
     private LocalDate fechaBaja;
 
@@ -39,6 +37,14 @@ public class Usuario {
    
     @OneToOne
     private Imagen imagen;
+
+    public Usuario() {
+
+    }
+
+    public Imagen getImagen() {
+        return imagen;
+    }
 
     public Usuario() {
 
@@ -106,6 +112,14 @@ public class Usuario {
 
     public void setFechaBaja(LocalDate fechaBaja) {
         this.fechaBaja = fechaBaja;
+    }
+
+    public boolean isBaja() {
+        return baja;
+    }
+
+    public void setBaja(boolean baja) {
+        this.baja = baja;
     }
 
     public String getMotivoBaja() {

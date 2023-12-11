@@ -136,6 +136,36 @@ public class UsuarioControlador {
         }
     }
 
+    @GetMapping("/registrarP")
+    public String registrarProveedor(Model model) {
+        model.addAttribute("proveedor", new Proveedor());
+        model.addAttribute("rol", Rol.USER); // Puedes establecer el rol predeterminado según tus necesidades
+        model.addAttribute("nombreEmpresa", ""); // O el valor por defecto
+        model.addAttribute("tipoServicio", "Gasista"); // O el valor por defecto
+        return "registroP";
+    }
+
+    @PostMapping("/registroP")
+    public String registro(@RequestParam String nombre,
+            @RequestParam String apellido,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String telefono,
+            @RequestParam Rol rol,
+            @RequestParam(required = false) String tipoServicio,
+            @RequestParam(required = false) String nombreEmpresa,
+            @RequestParam(required = false) MultipartFile archivo,
+            RedirectAttributes redirectAttributes) throws MiException {
+        try {
+            usuarioServicio.registrar(nombre, archivo, apellido, email, telefono, password, nombreEmpresa, tipoServicio, rol);;
+            redirectAttributes.addFlashAttribute("mensaje", "Registo completado con Exito");
+            return "redirect:/";
+        } catch (MiException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/";
+        }
+    }
+
     //CORRESPONDE AL ADMIN
     @GetMapping("/lista")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")

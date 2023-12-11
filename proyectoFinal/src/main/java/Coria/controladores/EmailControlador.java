@@ -33,12 +33,20 @@ public class EmailControlador {
             @RequestParam("email") String email,
             @RequestParam("subject") String subject,
             @RequestParam("body") String body) {
+
+
         String emailContent = "\nNombre: " + name + "\nEmail: " + email + "\nConsulta: " + body ;
 
         // Enviar el correo electrónico
-        emailServicio.sendEmail("azufrepo@gmail.com", "azufrepo@gmail.com", subject, emailContent);
+        emailServicio.sendEmail("asesora.vero@gmail.com", "romina.figueroa1986@gmail.com", subject, emailContent);
 
         return "redirect:/informacion";
+//        } catch (Exception e) {
+//            // Manejar cualquier excepción que pueda ocurrir durante el envío del correo electrónico
+//            e.printStackTrace();  // Puedes personalizar esto según tus necesidades
+//
+//        }
+//        return "redirect:/informacion";
 
     }
 }

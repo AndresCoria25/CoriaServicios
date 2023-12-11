@@ -37,12 +37,16 @@ public class UsuarioServicio implements UserDetailsService {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
+     @Autowired
+    private ProveedorRepositorio proveedorRepositorio;
+
     @Autowired
     private ProveedorRepositorio proveedorRepositorio;
 
     @Autowired
     private ImagenServicio imagenServicio;
     @Autowired
+  
     private EmailServicio emailServicio;
     @Autowired
     private ProveedorRepositorio provRep;
@@ -56,6 +60,7 @@ public class UsuarioServicio implements UserDetailsService {
         if (apellido.isEmpty() || apellido == null) {
             throw new MiException("el apellido no puede ser nulo o estar vacío");
         }
+
 
         if (email.isEmpty() || email == null) {
             throw new MiException("el email no puede ser nulo o estar vacio");
@@ -141,6 +146,11 @@ public class UsuarioServicio implements UserDetailsService {
             throw new MiException("Usuario no encontrado"); // Manejo de caso donde el usuario no se encuentra
         }
     }
+      public Usuario obtenerInformacionUsuario(String id) {
+        // Utiliza el método findById de tu repositorio para obtener un Optional<Usuario> por ID
+        return usuarioRepositorio.findById(id).orElse(null);
+    }
+
 
     public Usuario obtenerInformacionUsuario(String id) {
         // Utiliza el método findById de tu repositorio para obtener un Optional<Usuario> por ID
@@ -149,7 +159,10 @@ public class UsuarioServicio implements UserDetailsService {
 
     @Transactional
     public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono, String currentPassword,
+
             String tipoServicio, String nombreEmpresa, Rol rol, MultipartFile archivo) throws MiException {
+
+
         if (nombre.isEmpty() || nombre == null) {
             throw new MiException("el nombre no puede ser nulo o estar vacio");
         }
@@ -369,6 +382,7 @@ public class UsuarioServicio implements UserDetailsService {
         }
     }
 
+
     public List<Usuario> listaUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         for (Usuario usuario : usuarioRepositorio.findAll()) {
@@ -422,6 +436,7 @@ public class UsuarioServicio implements UserDetailsService {
 
     }
 
+
     @Transactional
     public void modificarFotoPerfil(String id, MultipartFile imagen) throws MiException {
         Optional<Proveedor> respuesta = proveedorRepositorio.findById(id); // Manejar la excepción, puedes lanzar una nueva excepción personalizada si es necesario.
@@ -444,4 +459,6 @@ public class UsuarioServicio implements UserDetailsService {
             throw new MiException("Usuario no encontrado");
         }
     }
+
 }
+

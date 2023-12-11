@@ -23,6 +23,10 @@ public class EmailServicio {
     public void sendEmail(String from, String to, String subject, String body) {
 
         SimpleMailMessage MimeMessage = new SimpleMailMessage();
+//        MimeMessage MimeMessage = javaMailSender.createMimeMessage();
+//        MimeMessageHelper helper = new MimeMessageHelper(MimeMessage);
+//
+//        try {
 
         MimeMessage.setFrom(from);
         MimeMessage.setTo(to);
