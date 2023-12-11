@@ -4,12 +4,29 @@
         <title>Inicia Sesion</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+
+
         <link th:replace="/fragments/Boostrap-Icono :: link"></link>
-        
+
         <!-- Tus estilos personalizados u hojas de estilo adicionales -->
         <link href="/login.css" rel="stylesheet" type="text/css"/>
+        
+        
+        <style>
+            /* Error message de registro*/
+            .alert-danger {
+                background-color: #f8d7da; /* Red background color */
+                max-width: 400px; /* Adjust the max-width as needed */
+                margin: 0 auto; /* Center the alert horizontally */
+            }
 
+            /* Success message de registro*/
+            .alert-success {
+                background-color: #d4edda; /* Green background color */
+                max-width: 400px; /* Adjust the max-width as needed */
+                margin: 0 auto; /* Center the alert horizontally */
+            }
+        </style>
     </head>
     <body>
 
@@ -45,7 +62,9 @@
                             <br>
                             <!--  <a th:href="@{/registrar}" class="btn btn-outline-success"><strong> DESEAS REGISTRARTE COMO USUARIO INGRESA AQUI </strong></a> -->
 
-                            <a href="">¿Olvidaste tu contraseña?</a>
+                            <!-- Dentro de tu HTML actual -->
+                            <a th:href="@{/forgot-password}">¿Olvidaste tu contraseña?</a>
+
 
 
                         </fieldset>

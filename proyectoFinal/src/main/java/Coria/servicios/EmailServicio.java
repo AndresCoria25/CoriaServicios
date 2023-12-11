@@ -21,13 +21,13 @@ public class EmailServicio {
     private JavaMailSender javaMailSender;
 
     public void sendEmail(String from, String to, String subject, String body) {
-//         Configuración del correo electrónico y envío
 
         SimpleMailMessage MimeMessage = new SimpleMailMessage();
 //        MimeMessage MimeMessage = javaMailSender.createMimeMessage();
 //        MimeMessageHelper helper = new MimeMessageHelper(MimeMessage);
 //
 //        try {
+
         MimeMessage.setFrom(from);
         MimeMessage.setTo(to);
         MimeMessage.setSubject(subject);

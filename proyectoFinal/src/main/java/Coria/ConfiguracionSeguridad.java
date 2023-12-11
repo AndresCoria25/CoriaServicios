@@ -54,7 +54,8 @@ public class ConfiguracionSeguridad extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers(
-                        "/", "/index.css", "/login", "/login.css",
+
+                        "/", "/index.css", "/login","/reset-password", "/forgot-password", "/login.css",
                         "/registrar", "/registrarP", "/registro", "/registroP", "/registro.css", "/registroP.css",
                         "/contacto", "/contacto.css", "/informacion", "/informacion.css",
                         "/calificacion", "/calificacion.css",

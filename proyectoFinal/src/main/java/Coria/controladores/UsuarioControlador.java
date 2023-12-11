@@ -9,13 +9,16 @@ import Coria.entidades.Proveedor;
 import Coria.entidades.Usuario;
 import Coria.enumeraciones.Rol;
 import Coria.excepciones.MiException;
+import Coria.repositorios.UsuarioRepositorio;
 import Coria.servicios.ProveedorServicio;
 import Coria.servicios.UsuarioServicio;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.http.ContentDisposition.formData;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -38,6 +41,8 @@ public class UsuarioControlador {
     @Autowired
     private UsuarioServicio usuarioServicio;
     @Autowired
+    private UsuarioRepositorio usuarioRepositorio;
+    @Autowired
     private ProveedorServicio provServ;
 
     @GetMapping("/")//localhost:8080
@@ -48,6 +53,87 @@ public class UsuarioControlador {
         }
         return "index.html";
 
+    }
+    /////////////////
+    //RECUPERACION DE PASSWORD
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordPage() {
+        return "forgot-password"; // Renderiza la vista para solicitar el restablecimiento de contraseña
+    }
+
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@RequestParam String email, RedirectAttributes redirectAttributes) {
+        try {
+            usuarioServicio.generarTokenYEnviarCorreo(email);
+            redirectAttributes.addFlashAttribute("mensaje", "Se ha enviado un correo electrónico para restablecer la contraseña.");
+        } catch (MiException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        }
+        return "redirect:/login"; // Redirige de vuelta a la página de inicio de sesión
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPasswordPage(@RequestParam String token, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Usuario> usuarioOptional = usuarioRepositorio.findByResetToken(token);
+        if (usuarioOptional.isPresent()) {
+            model.addAttribute("token", token);
+            return "reset-password"; // Renderiza la vista para cambiar la contraseña
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Token inválido para restablecer la contraseña.");
+            return "redirect:/login"; // O muestra un mensaje de error y redirige a la página de inicio de sesión
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String token, @RequestParam String newPassword, RedirectAttributes redirectAttributes) {
+        Optional<Usuario> usuarioOptional = usuarioRepositorio.findByResetToken(token);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+            try {
+                usuario.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+                usuario.setResetToken(null); // Borra el token después de cambiar la contraseña
+                usuarioRepositorio.save(usuario);
+                redirectAttributes.addFlashAttribute("mensaje", "Contraseña restablecida con éxito. Inicia sesión con tu nueva contraseña.");
+                return "redirect:/"; // Redirige a la página de inicio de sesión
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Hubo un error al restablecer la contraseña. Inténtalo de nuevo más tarde.");
+                return "redirect:/"; // O muestra un mensaje de error y redirige a la página de inicio de sesión
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Token inválido para restablecer la contraseña.");
+            return "redirect:/"; // O muestra un mensaje de error y redirige a la página de inicio de sesión
+        }
+    }
+    //FIN DE RECUPERACION DE PASSWORD
+    ////////////////
+    @GetMapping("/registrarP")
+    public String registrarProveedor(Model model) {
+        model.addAttribute("proveedor", new Proveedor());
+        model.addAttribute("rol", Rol.USER); // Puedes establecer el rol predeterminado según tus necesidades
+        model.addAttribute("nombreEmpresa", ""); // O el valor por defecto
+        model.addAttribute("tipoServicio", "Gasista"); // O el valor por defecto
+        return "registroP";
+    }
+
+    @PostMapping("/registroP")
+    public String registro(@RequestParam String nombre,
+            @RequestParam String apellido,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String telefono,
+            @RequestParam Rol rol,
+            @RequestParam(required = false) String tipoServicio,
+            @RequestParam(required = false) String nombreEmpresa,
+            @RequestParam(required = false) MultipartFile archivo,
+            RedirectAttributes redirectAttributes) throws MiException {
+        try {
+            usuarioServicio.registrar(nombre, archivo, apellido, email, telefono, password, nombreEmpresa, tipoServicio, rol);;
+            redirectAttributes.addFlashAttribute("mensaje", "Registo completado con Exito");
+            return "redirect:/";
+        } catch (MiException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/";
+        }
     }
 
     @GetMapping("/registrarP")
@@ -116,7 +202,7 @@ public class UsuarioControlador {
             @RequestParam String telefono,
             @RequestParam(required = false) String tipoServicio,
             @RequestParam(required = false) String nombreEmpresa,
-            @RequestParam (required = false)Rol rol,
+            @RequestParam(required = false) Rol rol,
             @RequestParam String currentPassword,
             @RequestParam(required = false) MultipartFile imagen,
             RedirectAttributes redirectAttributes) throws MiException {

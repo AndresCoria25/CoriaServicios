@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,7 +41,13 @@ public class UsuarioServicio implements UserDetailsService {
     private ProveedorRepositorio proveedorRepositorio;
 
     @Autowired
+    private ProveedorRepositorio proveedorRepositorio;
+
+    @Autowired
     private ImagenServicio imagenServicio;
+    @Autowired
+  
+    private EmailServicio emailServicio;
     @Autowired
     private ProveedorRepositorio provRep;
 
@@ -53,6 +60,7 @@ public class UsuarioServicio implements UserDetailsService {
         if (apellido.isEmpty() || apellido == null) {
             throw new MiException("el apellido no puede ser nulo o estar vacío");
         }
+
 
         if (email.isEmpty() || email == null) {
             throw new MiException("el email no puede ser nulo o estar vacio");
@@ -83,7 +91,27 @@ public class UsuarioServicio implements UserDetailsService {
 
         provRep.save(prov);
     }
+    
+    ////////////// 
+    // RECUPERACION DE PASSWORD
+    @Transactional
+    public void generarTokenYEnviarCorreo(String email) throws MiException {
+        Usuario usuario = usuarioRepositorio.buscarPorEmail(email);
+        if (usuario != null) {
+            String token = UUID.randomUUID().toString();
+            usuario.setResetToken(token);
+            usuarioRepositorio.save(usuario);
 
+            // Aquí llama al servicio de correo para enviar el correo electrónico con el token
+            String mensaje = "Utilice este enlace para restablecer su contraseña: http://localhost:8080/reset-password?token=" + token;
+            emailServicio.sendEmail("noreply@tuapp.com", email, "Restablecimiento de contraseña", mensaje);
+        } else {
+            throw new MiException("El correo electrónico proporcionado no está asociado a ninguna cuenta.");
+        }
+    }
+    //FIN DE RECUPERACION DE PASSWORD
+    ////////////////
+    
     @Transactional
     public Usuario actualizar(MultipartFile archivo, String id, String nombre, String apellido, String email, String telefono, String password) throws MiException {
         validar(nombre, apellido, email, telefono, password);
@@ -124,9 +152,17 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
 
+    public Usuario obtenerInformacionUsuario(String id) {
+        // Utiliza el método findById de tu repositorio para obtener un Optional<Usuario> por ID
+        return usuarioRepositorio.findById(id).orElse(null);
+    }
+
     @Transactional
     public Usuario modificarUsuario(String id, String nombre, String apellido, String email, String telefono, String currentPassword,
-            String tipoServicio,String nombreEmpresa,Rol rol,MultipartFile archivo) throws MiException {
+
+            String tipoServicio, String nombreEmpresa, Rol rol, MultipartFile archivo) throws MiException {
+
+
         if (nombre.isEmpty() || nombre == null) {
             throw new MiException("el nombre no puede ser nulo o estar vacio");
         }
@@ -316,35 +352,37 @@ public class UsuarioServicio implements UserDetailsService {
         }
     }
 
-   @Transactional
-public void darDeBaja(String id, String motivo) throws MiException {
-    Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+    @Transactional
+    public void darDeBaja(String id, String motivo) throws MiException {
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
 
-    if (respuesta.isPresent()) {
-        Usuario usuario = respuesta.get();
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
 
-        // Ensure that usuarioRepositorio is not null
-        if (usuarioRepositorio != null) {
-            // Verificar si el usuario es un administrador
-            if (usuario.getRol() != null && usuario.getRol().equals(Rol.ADMIN)) {
-                // Si es administrador, registrar la fecha de baja en lugar de eliminarlo
-                usuario.setFechaBaja(LocalDate.now());
-                usuario.setBaja(true);
-                usuario.setMotivoBaja(motivo);
+            // Ensure that usuarioRepositorio is not null
+            if (usuarioRepositorio != null) {
+                // Verificar si el usuario es un administrador
+                if (usuario.getRol() != null && usuario.getRol().equals(Rol.ADMIN)) {
+                    // Si es administrador, registrar la fecha de baja en lugar de eliminarlo
+                    usuario.setFechaBaja(LocalDate.now());
+                    usuario.setBaja(true);
+                    usuario.setMotivoBaja(motivo);
+                } else {
+                    // Si no es administrador, dar de baja al usuario sin eliminar físicamente
+                    usuario.setBaja(true);
+                    usuario.setFechaBaja(LocalDate.now());
+                    usuario.setMotivoBaja(motivo);
+                    usuarioRepositorio.save(usuario); // Actualizar en lugar de eliminar
+                }
             } else {
-                // Si no es administrador, dar de baja al usuario sin eliminar físicamente
-                usuario.setBaja(true);
-                usuario.setFechaBaja(LocalDate.now());
-                usuario.setMotivoBaja(motivo);
-                usuarioRepositorio.save(usuario); // Actualizar en lugar de eliminar
+                throw new MiException("UsuarioRepositorio no inicializado");
             }
         } else {
-            throw new MiException("UsuarioRepositorio no inicializado");
+            throw new MiException("Usuario no encontrado");
         }
-    } else {
-        throw new MiException("Usuario no encontrado");
     }
-}
+
+
     public List<Usuario> listaUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         for (Usuario usuario : usuarioRepositorio.findAll()) {
@@ -397,28 +435,30 @@ public void darDeBaja(String id, String motivo) throws MiException {
         }
 
     }
-  @Transactional
-public void modificarFotoPerfil(String id, MultipartFile imagen) throws MiException {
-    Optional<Proveedor> respuesta = proveedorRepositorio.findById(id); // Manejar la excepción, puedes lanzar una nueva excepción personalizada si es necesario.
-    if (respuesta.isPresent()) {
-        Proveedor usuario = respuesta.get();
-        
-        // Puedes agregar lógica para validar y procesar la imagen antes de guardarla.
-        // Asegúrate de validar que la imagen no sea nula y tiene contenido.
-        
-        String idImagen = null;
-        
-        if (usuario.getImagen() != null) {
-            idImagen = usuario.getImagen().getId();
+
+
+    @Transactional
+    public void modificarFotoPerfil(String id, MultipartFile imagen) throws MiException {
+        Optional<Proveedor> respuesta = proveedorRepositorio.findById(id); // Manejar la excepción, puedes lanzar una nueva excepción personalizada si es necesario.
+        if (respuesta.isPresent()) {
+            Proveedor usuario = respuesta.get();
+
+            // Puedes agregar lógica para validar y procesar la imagen antes de guardarla.
+            // Asegúrate de validar que la imagen no sea nula y tiene contenido.
+            String idImagen = null;
+
+            if (usuario.getImagen() != null) {
+                idImagen = usuario.getImagen().getId();
+            }
+
+            Imagen nuevaImagen = imagenServicio.actualizar(imagen, idImagen);
+            usuario.setImagen(nuevaImagen);
+
+            proveedorRepositorio.save(usuario);
+        } else {
+            throw new MiException("Usuario no encontrado");
         }
-        
-        Imagen nuevaImagen = imagenServicio.actualizar(imagen, idImagen);
-        usuario.setImagen(nuevaImagen);
-        
-        proveedorRepositorio.save(usuario);
-    } else {
-        throw new MiException("Usuario no encontrado");
     }
-}
+
 }
 

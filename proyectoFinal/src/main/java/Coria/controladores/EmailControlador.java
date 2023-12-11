@@ -34,13 +34,7 @@ public class EmailControlador {
             @RequestParam("subject") String subject,
             @RequestParam("body") String body) {
 
-//        try {
-//            // Validación de parámetros
-//            if (name.isEmpty() || email.isEmpty() || subject.isEmpty() || body.isEmpty()) {
-//                // Manejar la validación fallida, puedes lanzar una excepción o mostrar un mensaje al usuario
-//                return "error";
-//            }
-        // Construir el contenido del correo electrónico
+
         String emailContent = "\nNombre: " + name + "\nEmail: " + email + "\nConsulta: " + body ;
 
         // Enviar el correo electrónico
@@ -53,5 +47,6 @@ public class EmailControlador {
 //
 //        }
 //        return "redirect:/informacion";
+
     }
 }

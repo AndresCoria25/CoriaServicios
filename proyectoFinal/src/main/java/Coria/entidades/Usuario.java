@@ -25,6 +25,7 @@ public class Usuario {
     private String password;
     private String email;
     private String telefono;
+    private String resetToken;
     @Column(name = "fecha_baja")
     private LocalDate fechaBaja;
 
@@ -45,8 +46,8 @@ public class Usuario {
         return imagen;
     }
 
-    public void setImagen(Imagen imagen) {
-        this.imagen = imagen;
+    public Usuario() {
+
     }
 
     public String getId() {
@@ -97,12 +98,12 @@ public class Usuario {
         this.telefono = telefono;
     }
 
-    public Rol getRol() {
-        return rol;
+    public String getResetToken() {
+        return resetToken;
     }
 
-    public void setRol(Rol rol) {
-        this.rol = rol;
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
     }
 
     public LocalDate getFechaBaja() {
@@ -127,6 +128,30 @@ public class Usuario {
 
     public void setMotivoBaja(String motivoBaja) {
         this.motivoBaja = motivoBaja;
+    }
+
+    public boolean isBaja() {
+        return baja;
+    }
+
+    public void setBaja(boolean baja) {
+        this.baja = baja;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public Imagen getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(Imagen imagen) {
+        this.imagen = imagen;
     }
 
 }

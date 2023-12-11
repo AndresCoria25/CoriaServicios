@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
+//
+    @Query("SELECT u FROM Usuario u WHERE u.email = :email")
+    public Usuario findOptionalByEmail(@Param("email") String email);
+//
 
     @Query("SELECT u FROM Usuario u WHERE u.email = :email")
     public Usuario buscarPorEmail(@Param("email") String email);
@@ -22,4 +26,8 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
 
     @Query("SELECT u FROM Usuario u WHERE LOWER(u.nombre) LIKE LOWER(CONCAT('%', :terminoBusqueda , '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :terminoBusqueda , '%'))")
     List<Usuario> findByNombreContainingOrEmailContaining(@Param("terminoBusqueda") String terminoBusqueda);
+
+    @Query("SELECT u FROM Usuario u WHERE u.resetToken = :resetToken")
+     Optional <Usuario> findByResetToken(@Param("resetToken") String resetToken);
+
 }
